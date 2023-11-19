@@ -1,0 +1,6 @@
+﻿[Some()]
+public interface MyInterface
+{
+    [Some()]
+    void Thing();
+}
