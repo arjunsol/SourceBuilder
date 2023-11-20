@@ -1,15 +1,16 @@
 ﻿namespace G4ME.SourceBuilder;
 
-public class MethodBuilder(IClassBuilder parent, string returnType, string methodName)
+public class MethodBuilder(ITypeBuilder parent, string returnType, string methodName)
 {
-    private readonly IClassBuilder _parentBuilder = parent;
+    private readonly ITypeBuilder _parentBuilder = parent;
     private readonly List<ParameterSyntax> _parameters = [];
     private readonly BlockBuilder _bodyBuilder = new();
 
     private MethodDeclarationSyntax _methodDeclaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), methodName)
-            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                                                            .AddModifiers(SyntaxFactory.Token(
+                                                                SyntaxKind.PublicKeyword));
 
-    public MethodBuilder(IClassBuilder classBuilder, string methodName) : this(classBuilder, "void", methodName)
+    public MethodBuilder(ITypeBuilder parentBuilder, string methodName) : this(parentBuilder, "void", methodName)
     {
     }
 
@@ -19,7 +20,7 @@ public class MethodBuilder(IClassBuilder parent, string returnType, string metho
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameterName))
             .WithType(SyntaxFactory.ParseTypeName(parameterType));
         _parameters.Add(parameter);
-        _parentBuilder.AddNamespace(typeof(T));
+        _parentBuilder.AddNamespace<T>();
         return this;
     }
 
@@ -42,8 +43,9 @@ public class MethodBuilder(IClassBuilder parent, string returnType, string metho
         _methodDeclaration = _methodDeclaration
             .WithParameterList(SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(_parameters)))
             .WithBody(_bodyBuilder.Build());
+        
         return _methodDeclaration;
     }
 
-    public IClassBuilder EndMethod() => _parentBuilder;
+    public ITypeBuilder EndMethod() => _parentBuilder;
 }

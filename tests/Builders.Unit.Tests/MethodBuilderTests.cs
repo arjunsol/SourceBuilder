@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using NSubstitute;
 using System.Text.Json.Serialization;
 
-namespace CQRS.SourceGenerators.Test.CodeGen;
+namespace G4ME.SourceBuilder.Tests;
 
 public class MethodBuilderTests
 {
@@ -54,9 +54,9 @@ public class MethodBuilderTests
     public void TestAddParameterAddsNamespace_AddsNamespaceCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-        methodBuilder.Parameter<TestType>("param1");
+        methodBuilder.Parameter<SomeType>("param1");
 
-        _mockClassBuilder.Received(1).AddNamespace(typeof(TestType));
+        _mockClassBuilder.Received(1).AddNamespace<SomeType>();
     }
 
     [Fact]

@@ -1,30 +1,19 @@
-﻿namespace CQRS.SourceGenerators.Test.CodeGen;
-
-// Replace "YourNamespace" with the actual namespace of your project
+﻿namespace G4ME.SourceBuilder.Tests;
 
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-public sealed class SomeAttribute : Attribute
+public sealed class SomeAttribute(params object[] args) : Attribute
 {
-    public SomeAttribute(params object[] args)
-    {
-        // Implementation details (if any)
-    }
+    public object[] Args { get; } = args;
 }
 
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-public sealed class AnotherAttribute : Attribute
+public sealed class AnotherAttribute(params object[] args) : Attribute
 {
-    public AnotherAttribute(params object[] args)
-    {
-        // Implementation details (if any)
-    }
+    public object[] Args { get; } = args;
 }
 
 [AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-public sealed class TestAttribute : Attribute
+public sealed class TestAttribute(params object[] args) : Attribute
 {
-    public TestAttribute(params object[] args)
-    {
-        // Implementation details (if any)
-    }
+    public object[] Args { get; } = args;
 }

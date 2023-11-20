@@ -1,4 +1,4 @@
-﻿namespace CQRS.SourceGenerators.Test.CodeGen;
+﻿namespace G4ME.SourceBuilder.Tests;
 
 public class ClassBuilderTests
 {
@@ -8,7 +8,7 @@ public class ClassBuilderTests
         var className = "TestClassName";
         var classBuilder = new ClassBuilder(className);
 
-        Assert.Equal(className, classBuilder.ClassName);
+        Assert.Equal(className, classBuilder.TypeName);
         Assert.Empty(classBuilder.Namespace);
     }
 
@@ -19,7 +19,7 @@ public class ClassBuilderTests
         var classNamespace = "TestNamespace";
         var classBuilder = new ClassBuilder(className, classNamespace);
 
-        Assert.Equal(className, classBuilder.ClassName);
+        Assert.Equal(className, classBuilder.TypeName);
         Assert.Equal(classNamespace, classBuilder.Namespace);
     }
 
@@ -27,14 +27,14 @@ public class ClassBuilderTests
     public void TestAddParameterGenericReturn_AddsCorrectNamespace()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithMethod<List<TestType>>("TestMethod",
+                               .WithMethod<List<SomeType>>("TestMethod",
                                                            m => m.WithBody(
                                                            b => b.AddStatement("return new List<TestType>();")));
         var nspace = classBuilder.GetRequiredNamespaces();
 
         Assert.Equal(2, nspace.Count());
         Assert.Contains("System.Collections.Generic", nspace);
-        Assert.Contains("CQRS.SourceGenerators.Test.CodeGen", nspace);
+        Assert.Contains("G4ME.SourceBuilder.Tests", nspace);
     }
 
     [Fact]
@@ -56,12 +56,12 @@ public class ClassBuilderTests
     public void TestImplementsInterface_ValidInterface_AddsInterface()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.ImplementsInterface<IMyInterface>();
+        classBuilder.ImplementsInterface<ISomeInterface>();
 
         var classDeclaration = classBuilder.Build();
 
         Assert.NotNull(classDeclaration.BaseList);
-        Assert.Contains(classDeclaration.BaseList.Types, t => t.ToString() == nameof(IMyInterface));
+        Assert.Contains(classDeclaration.BaseList.Types, t => t.ToString() == nameof(ISomeInterface));
     }
 
     [Fact]

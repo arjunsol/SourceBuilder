@@ -4,8 +4,9 @@ public interface ITypeBuilder
 
 {
     string Namespace { get; }
-    string ClassName { get; }
+    string TypeName { get; }
 
     IEnumerable<string> GetRequiredNamespaces();
     TypeDeclarationSyntax Build();
+    void AddNamespace<T>();
 }

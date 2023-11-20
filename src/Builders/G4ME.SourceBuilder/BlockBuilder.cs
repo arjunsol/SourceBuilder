@@ -11,8 +11,5 @@ public class BlockBuilder
         return this;
     }
 
-    public BlockSyntax Build()
-    {
-        return SyntaxFactory.Block(_statements);
-    }
+    public BlockSyntax Build() => SyntaxFactory.Block(_statements);
 }

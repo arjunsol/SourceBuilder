@@ -1,14 +1,7 @@
-﻿
-namespace G4ME.SourceBuilder;
+﻿namespace G4ME.SourceBuilder;
 
-public interface IClassBuilder
+public interface IClassBuilder : ITypeBuilder
 {
-    string ClassName { get; }
-    string Namespace { get; }
-
-    void AddNamespace(Type type);
-    TypeDeclarationSyntax Build();
-    IEnumerable<string> GetRequiredNamespaces();
     ClassBuilder ImplementsInterface<TInterface>() where TInterface : class;
     ClassBuilder InheritsFrom<TBase>() where TBase : class;
     ClassBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator);

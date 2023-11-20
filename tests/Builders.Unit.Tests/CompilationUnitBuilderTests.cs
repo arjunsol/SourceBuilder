@@ -1,6 +1,6 @@
-﻿
+﻿using System.Text;
 
-namespace CQRS.SourceGenerators.Test.CodeGen;
+namespace G4ME.SourceBuilder.Tests;
 
 public class CompilationUnitBuilderTests
 {
@@ -42,6 +42,27 @@ public class CompilationUnitBuilderTests
     }
 
     [Fact]
+    public void Build_WithClassAndInterface_ReturnsCompilationUnitWithMultipleClasses()
+    {
+        // Arrange
+        var classBuilder = new ClassBuilder("TestClass", "TestNamespace");
+        var interfaceBuilder = new InterfaceBuilder("ITestInterface", "TestNamespace");
+
+        var compilationUnitBuilder = new CompilationUnitBuilder(classBuilder, interfaceBuilder);
+
+        // Act
+        var compilationUnit = compilationUnitBuilder.Build();
+        var declaredTypes = compilationUnit.DescendantNodes()
+                                             .OfType<TypeDeclarationSyntax>()
+                                             .ToList();
+
+        // Assert
+        Assert.Equal(2, declaredTypes.Count);
+        Assert.Contains(declaredTypes, c => c.Identifier.Text == "TestClass");
+        Assert.Contains(declaredTypes, c => c.Identifier.Text == "ITestInterface");
+    }
+
+    [Fact]
     public void Build_WithClassNamespace_CreatesCorrectNamespace()
     {
         // Arrange
@@ -64,8 +85,8 @@ public class CompilationUnitBuilderTests
     {
         // Arrange
         var classBuilder = new ClassBuilder("TestClass", "TestNamespace");
-        // Assuming ClassBuilder.AddNamespace method adds a namespace to requiredNamespaces
-        classBuilder.AddNamespace(typeof(System.Text.StringBuilder));
+        
+        classBuilder.AddNamespace<StringBuilder>();
         var compilationUnitBuilder = new CompilationUnitBuilder(classBuilder);
 
         // Act

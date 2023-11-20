@@ -1,4 +1,4 @@
-﻿namespace CQRS.SourceGenerators.Test.CodeGen;
+﻿namespace G4ME.SourceBuilder.Tests;
 
 public class ConstructorBuilderTests
 {
@@ -44,9 +44,9 @@ public class ConstructorBuilderTests
     {
         var classBuilder = new ClassBuilder("TestClass");
         var constructorBuilder = new ConstructorBuilder(classBuilder);
-        constructorBuilder.Parameter<TestType>("param1");
+        constructorBuilder.Parameter<SomeType>("param1");
 
-        Assert.Contains(typeof(TestType).Namespace, classBuilder.GetRequiredNamespaces());
+        Assert.Contains(typeof(SomeType).Namespace, classBuilder.GetRequiredNamespaces());
     }
 
     [Fact]

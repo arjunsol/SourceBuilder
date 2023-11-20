@@ -1,4 +1,4 @@
-﻿namespace CQRS.SourceGenerators.Test.CodeGen;
+﻿namespace G4ME.SourceBuilder.Tests;
 
 public class BlockBuilderTests
 {
