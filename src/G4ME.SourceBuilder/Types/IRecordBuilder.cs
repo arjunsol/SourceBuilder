@@ -1,5 +1,6 @@
-﻿
-namespace G4ME.SourceBuilder;
+﻿using G4ME.SourceBuilder.Syntax;
+
+namespace G4ME.SourceBuilder.Types;
 
 public interface IRecordBuilder : ITypeBuilder
 {

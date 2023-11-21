@@ -1,14 +1,14 @@
 ﻿namespace G4ME.SourceBuilder;
 
-public class CompilationUnitBuilder(params ITypeBuilder[] classBuilders)
+public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
 {
-    private readonly List<ITypeBuilder> _classBuilders = [.. classBuilders];
+    private readonly List<ITypeBuilder> _classBuilders = [.. typeBuilders];
 
     public CompilationUnitSyntax Build()
     {
         if (_classBuilders.Count == 0)
         {
-            throw new InvalidOperationException("At least one class builder is required.");
+            throw new InvalidOperationException("At least one type builder is required.");
         }
 
         // Get the namespace from the first class (assuming all classes share the same namespace)
@@ -35,11 +35,13 @@ public class CompilationUnitBuilder(params ITypeBuilder[] classBuilders)
 
             // Creating a region around each class
             var regionTriviaStart = SyntaxFactory.Trivia(SyntaxFactory.RegionDirectiveTrivia(true)
-                .WithEndOfDirectiveToken(SyntaxFactory.Token(SyntaxKind.EndOfDirectiveToken)));
+                                        .WithEndOfDirectiveToken(SyntaxFactory.Token(SyntaxKind.EndOfDirectiveToken)));
+            
             var regionTriviaEnd = SyntaxFactory.Trivia(SyntaxFactory.EndRegionDirectiveTrivia(true));
 
             var leadingTrivia = SyntaxFactory.TriviaList(regionTriviaStart)
-                .Add(SyntaxFactory.Comment($"#region {classBuilder.TypeName}"));
+                                    .Add(SyntaxFactory.Comment($"#region {classBuilder.TypeName}"));
+            
             var trailingTrivia = SyntaxFactory.TriviaList(regionTriviaEnd);
 
             classDeclaration = classDeclaration

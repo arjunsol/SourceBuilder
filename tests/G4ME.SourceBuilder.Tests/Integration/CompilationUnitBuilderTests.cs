@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Integration;
 
 public class CompilationUnitBuilderTests
 {
@@ -85,7 +85,7 @@ public class CompilationUnitBuilderTests
     {
         // Arrange
         var classBuilder = new ClassBuilder("TestClass", "TestNamespace");
-        
+
         classBuilder.AddNamespace<StringBuilder>();
         var compilationUnitBuilder = new CompilationUnitBuilder(classBuilder);
 

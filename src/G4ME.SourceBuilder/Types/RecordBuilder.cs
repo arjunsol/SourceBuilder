@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder;
+﻿using G4ME.SourceBuilder.Syntax;
+
+namespace G4ME.SourceBuilder.Types;
 
 public class RecordBuilder(string recordName, string recordNamespace = "") : IRecordBuilder
 {

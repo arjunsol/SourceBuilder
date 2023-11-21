@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder.Tests;
+﻿namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class InterfaceBuilderTests
 {

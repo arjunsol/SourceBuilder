@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis;
 using NSubstitute;
 using System.Text.Json.Serialization;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class MethodBuilderTests
 {
@@ -79,14 +79,14 @@ public class MethodBuilderTests
 
         var method = methodBuilder.Build();
 
-        Assert.NotEmpty(method.AttributeLists);        
+        Assert.NotEmpty(method.AttributeLists);
     }
 
     [Fact]
     public void TestBuildMethod_BuildsMethodCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-        methodBuilder.Parameter<int>("param1").WithBody(body => body.AddStatement("return;")) ;
+        methodBuilder.Parameter<int>("param1").WithBody(body => body.AddStatement("return;"));
 
         var method = methodBuilder.Build();
 

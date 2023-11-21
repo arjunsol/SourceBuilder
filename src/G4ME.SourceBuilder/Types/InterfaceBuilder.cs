@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder;
+﻿namespace G4ME.SourceBuilder.Types;
 
 public class InterfaceBuilder(string name, string interfaceNamespace = "") : IInterfaceBuilder
 {
@@ -16,10 +16,10 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
         AddNamespace<TBase>();
 
         var baseTypeName = typeof(TBase).Name;
-    
+
         _interfaceDeclaration = _interfaceDeclaration.AddBaseListTypes(
                                     SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(baseTypeName)));
-        
+
         return this;
     }
 
@@ -28,7 +28,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
         var methodBuilder = new MethodBuilder(this, methodName);
         methodConfigurator(methodBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(methodBuilder.Build());
-        
+
         return this;
     }
 
@@ -38,9 +38,9 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
         var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
         propertyConfigurator(propertyBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(propertyBuilder.Build());
-        
+
         AddNamespace<T>();
-        
+
         return this;
     }
 
@@ -49,7 +49,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
         var attributeBuilder = new AttributeBuilder();
         attributeConfigurator(attributeBuilder);
         _interfaceDeclaration = _interfaceDeclaration.WithAttributeLists(attributeBuilder.Build());
-        
+
         return this;
     }
 

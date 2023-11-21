@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder.Tests;
+﻿namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class ClassBuilderTests
 {
@@ -145,7 +145,7 @@ public class ClassBuilderTests
         Assert.NotNull(constructorDeclaration);
         Assert.Single(constructorDeclaration.ParameterList.Parameters);
         Assert.Equal("param1", constructorDeclaration.ParameterList.Parameters[0].Identifier.ValueText);
-        
+
         var firstParameter = constructorDeclaration.ParameterList.Parameters[0];
         Assert.NotNull(firstParameter);
         Assert.NotNull(firstParameter.Type);

@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
 public class MethodBuilder(ITypeBuilder parent, string returnType, string methodName)
 {
