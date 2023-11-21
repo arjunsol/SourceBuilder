@@ -1,6 +1,6 @@
 ﻿namespace G4ME.SourceBuilder;
 
-public class ClassBuilder(string name, string classNamespace) : ITypeBuilder, IClassBuilder
+public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 {
     private readonly string _classNamespace = classNamespace;
     private readonly NamespaceCollection _requiredNamespaces = new(classNamespace);
