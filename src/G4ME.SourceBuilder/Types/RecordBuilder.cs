@@ -8,7 +8,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : IRe
     private RecordDeclarationSyntax _recordDeclaration = SyntaxFactory.RecordDeclaration(SyntaxFactory.Token(SyntaxKind.RecordKeyword), recordName)
                                                             .AddModifiers(SyntaxFactory.Token(
                                                                 SyntaxKind.PublicKeyword));
-    public string TypeName { get; private set; } = recordName;
+    public string ClassName { get; private set; } = recordName;
     public string Namespace { get; private set; } = recordNamespace;
 
     public RecordBuilder InheritsFrom<TBase>() where TBase : class
@@ -37,7 +37,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : IRe
 
     public RecordBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator)
     {
-        var propertyType = typeof(T).Name;
+        var propertyType = TypeName.ValueOf<T>();
         var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
         propertyConfigurator(propertyBuilder);
         _recordDeclaration = _recordDeclaration.AddMembers(propertyBuilder.Build());

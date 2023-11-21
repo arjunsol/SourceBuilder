@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class NamespaceCollectionTests
 {
@@ -6,19 +8,19 @@ public class NamespaceCollectionTests
     public void Add_ValidNamespace_AddsNamespace()
     {
         var collection = new NamespaceCollection("");
-        collection.Add<SomeType>();
+        collection.Add<SomeClass>();
 
-        Assert.Contains("G4ME.SourceBuilder.Tests", collection.GetAll());
+        Assert.Contains("G4ME.SourceBuilder.Tests.Objects", collection.GetAll());
     }
 
     [Fact]
     public void Add_DuplicateNamespace_IgnoresDuplicate()
     {
         var collection = new NamespaceCollection("");
-        collection.Add<SomeType>();
-        collection.Add<SomeType>(); // Duplicate
+        collection.Add<SomeClass>();
+        collection.Add<SomeClass>(); // Duplicate
 
-        Assert.Single(collection.GetAll(), ns => ns == "G4ME.SourceBuilder.Tests");
+        Assert.Single(collection.GetAll(), ns => ns == "G4ME.SourceBuilder.Tests.Objects");
     }
 
     [Fact]

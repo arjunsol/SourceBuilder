@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class RecordBuilderTests
 {
@@ -48,21 +50,21 @@ public class RecordBuilderTests
             .FirstOrDefault(p => p.Identifier.ValueText == "MyProperty");
 
         Assert.NotNull(property);
-        Assert.Equal("Int32", property.Type.ToString());
+        Assert.Equal("int", property.Type.ToString());
     }
 
     [Fact]
     public void TestAddParameterGenericReturn_AddsCorrectNamespace()
     {
         var classBuilder = new RecordBuilder("TestClass")
-                               .WithMethod<List<SomeType>>("TestMethod",
+                               .WithMethod<List<SomeClass>>("TestMethod",
                                                            m => m.WithBody(
                                                            b => b.AddStatement("return new List<TestType>();")));
         var nspace = classBuilder.GetRequiredNamespaces();
 
         Assert.Equal(2, nspace.Count());
         Assert.Contains("System.Collections.Generic", nspace);
-        Assert.Contains("G4ME.SourceBuilder.Tests", nspace);
+        Assert.Contains("G4ME.SourceBuilder.Tests.Objects", nspace);
     }
 
     [Fact]

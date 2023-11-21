@@ -6,12 +6,12 @@ public class ConstructorBuilder(ClassBuilder parent)
     private readonly List<ParameterSyntax> _parameters = [];
     private readonly BlockBuilder _bodyBuilder = new();
 
-    private ConstructorDeclarationSyntax _constructorDeclaration = SyntaxFactory.ConstructorDeclaration(parent.TypeName)
+    private ConstructorDeclarationSyntax _constructorDeclaration = SyntaxFactory.ConstructorDeclaration(parent.ClassName)
                                                                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
 
     public ConstructorBuilder Parameter<T>(string parameterName)
     {
-        var parameterType = typeof(T).Name;
+        var parameterType = TypeName.ValueOf<T>();
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameterName))
             .WithType(SyntaxFactory.ParseTypeName(parameterType));
         _parameters.Add(parameter);

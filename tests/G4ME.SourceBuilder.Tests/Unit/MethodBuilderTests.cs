@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using NSubstitute;
 using System.Text.Json.Serialization;
+using G4ME.SourceBuilder.Tests.Objects;
 
 namespace G4ME.SourceBuilder.Tests.Unit;
 
@@ -36,7 +37,7 @@ public class MethodBuilderTests
 
         Assert.Equal("param1", parameter.Identifier.ValueText);
         Assert.NotNull(parameter.Type);
-        Assert.Equal("Int32", parameter.Type.ToString());
+        Assert.Equal("int", parameter.Type.ToString());
     }
 
     [Fact]
@@ -54,9 +55,9 @@ public class MethodBuilderTests
     public void TestAddParameterAddsNamespace_AddsNamespaceCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-        methodBuilder.Parameter<SomeType>("param1");
+        methodBuilder.Parameter<SomeClass>("param1");
 
-        _mockClassBuilder.Received(1).AddNamespace<SomeType>();
+        _mockClassBuilder.Received(1).AddNamespace<SomeClass>();
     }
 
     [Fact]

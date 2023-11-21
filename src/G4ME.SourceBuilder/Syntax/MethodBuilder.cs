@@ -16,7 +16,7 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
 
     public MethodBuilder Parameter<T>(string parameterName)
     {
-        var parameterType = typeof(T).Name;
+        var parameterType = TypeName.ValueOf<T>();
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameterName))
             .WithType(SyntaxFactory.ParseTypeName(parameterType));
         _parameters.Add(parameter);

@@ -1,16 +1,16 @@
-﻿namespace G4ME.SourceBuilder.Syntax;
+﻿namespace G4ME.SourceBuilder.Types;
 
 public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 {
     private readonly string _classNamespace = classNamespace;
     private readonly NamespaceCollection _requiredNamespaces = new(classNamespace);
-    
+
     private ClassDeclarationSyntax _classDeclaration = SyntaxFactory.ClassDeclaration(name)
                                                             .AddModifiers(SyntaxFactory.Token(
                                                                 SyntaxKind.PublicKeyword));
 
-    public string TypeName { get; private set; } = name;
-    
+    public string ClassName { get; private set; } = name;
+
     public string Namespace => _classNamespace;
 
     public ClassBuilder(string name) : this(name, string.Empty) { }
@@ -23,15 +23,15 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         _classDeclaration = _classDeclaration.AddBaseListTypes(
             SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(baseTypeName))
         );
-        
+
         return this;
     }
 
     public ClassBuilder ImplementsInterface<TInterface>() where TInterface : class
     {
         AddNamespace<TInterface>();
-        
-        var interfaceName = typeof(TInterface).Name;
+
+        var interfaceName = TypeName.ValueOf<TInterface>();
         _classDeclaration = _classDeclaration.AddBaseListTypes(
                                 SyntaxFactory.SimpleBaseType(
                                     SyntaxFactory.ParseTypeName(interfaceName)));
@@ -43,11 +43,11 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
     {
         AddNamespace<T>();
 
-        var propertyType = typeof(T).Name;
+        var propertyType = TypeName.ValueOf<T>();
         var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
         propertyConfigurator(propertyBuilder);
         _classDeclaration = _classDeclaration.AddMembers(propertyBuilder.Build());
-        
+
         return this;
     }
 
@@ -56,7 +56,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         var attributeBuilder = new AttributeBuilder();
         attributeConfigurator(attributeBuilder);
         _classDeclaration = _classDeclaration.WithAttributeLists(attributeBuilder.Build());
-        
+
         return this;
     }
 
@@ -65,7 +65,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         var constructorBuilder = new ConstructorBuilder(this);
         constructorConfigurator(constructorBuilder);
         _classDeclaration = _classDeclaration.AddMembers(constructorBuilder.Build());
-        
+
         return this;
     }
 
@@ -76,16 +76,16 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         var methodBuilder = new MethodBuilder(this, typeof(T).Name, methodName);
         methodConfigurator(methodBuilder);
         _classDeclaration = _classDeclaration.AddMembers(methodBuilder.Build());
-        
+
         return this;
     }
 
     public ClassBuilder WithMethod(string methodName, Action<MethodBuilder> methodConfigurator)
     {
         var methodBuilder = new MethodBuilder(this, methodName);
-        methodConfigurator(methodBuilder);        
+        methodConfigurator(methodBuilder);
         _classDeclaration = _classDeclaration.AddMembers(methodBuilder.Build());
-        
+
         return this;
     }
 

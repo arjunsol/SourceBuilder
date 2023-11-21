@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class InterfaceBuilderTests
 {
@@ -9,7 +11,7 @@ public class InterfaceBuilderTests
         var interfaceNamespace = "TestNamespace";
         var interfaceBuilder = new InterfaceBuilder(interfaceName, interfaceNamespace);
 
-        Assert.Equal(interfaceName, interfaceBuilder.TypeName);
+        Assert.Equal(interfaceName, interfaceBuilder.ClassName);
         Assert.Equal(interfaceNamespace, interfaceBuilder.Namespace);
     }
 
@@ -49,7 +51,7 @@ public class InterfaceBuilderTests
         var property = interfaceDeclaration.Members.OfType<PropertyDeclarationSyntax>().FirstOrDefault(p => p.Identifier.ValueText == "TestProperty");
 
         Assert.NotNull(property);
-        Assert.Equal("Int32", property.Type.ToString());
+        Assert.Equal("int", property.Type.ToString());
     }
 
     [Fact]

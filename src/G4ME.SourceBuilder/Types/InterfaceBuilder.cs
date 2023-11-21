@@ -7,7 +7,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
                                                                     .AddModifiers(SyntaxFactory.Token(
                                                                         SyntaxKind.PublicKeyword));
 
-    public string TypeName { get; private set; } = name;
+    public string ClassName { get; private set; } = name;
 
     public string Namespace => interfaceNamespace;
 
@@ -34,7 +34,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
 
     public InterfaceBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator)
     {
-        var propertyType = typeof(T).Name;
+        var propertyType = TypeName.ValueOf<T>();
         var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
         propertyConfigurator(propertyBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(propertyBuilder.Build());

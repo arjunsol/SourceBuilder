@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class ConstructorBuilderTests
 {
@@ -24,7 +26,7 @@ public class ConstructorBuilderTests
 
         Assert.Equal("param1", parameter.Identifier.ValueText);
         Assert.NotNull(parameter.Type);
-        Assert.Equal("Int32", parameter.Type.ToString());
+        Assert.Equal("int", parameter.Type.ToString());
     }
 
     [Fact]
@@ -44,9 +46,9 @@ public class ConstructorBuilderTests
     {
         var classBuilder = new ClassBuilder("TestClass");
         var constructorBuilder = new ConstructorBuilder(classBuilder);
-        constructorBuilder.Parameter<SomeType>("param1");
+        constructorBuilder.Parameter<SomeClass>("param1");
 
-        Assert.Contains(typeof(SomeType).Namespace, classBuilder.GetRequiredNamespaces());
+        Assert.Contains(typeof(SomeClass).Namespace, classBuilder.GetRequiredNamespaces());
     }
 
     [Fact]

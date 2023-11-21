@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class ClassBuilderTests
 {
@@ -8,7 +10,7 @@ public class ClassBuilderTests
         var className = "TestClassName";
         var classBuilder = new ClassBuilder(className);
 
-        Assert.Equal(className, classBuilder.TypeName);
+        Assert.Equal(className, classBuilder.ClassName);
         Assert.Empty(classBuilder.Namespace);
     }
 
@@ -19,7 +21,7 @@ public class ClassBuilderTests
         var classNamespace = "TestNamespace";
         var classBuilder = new ClassBuilder(className, classNamespace);
 
-        Assert.Equal(className, classBuilder.TypeName);
+        Assert.Equal(className, classBuilder.ClassName);
         Assert.Equal(classNamespace, classBuilder.Namespace);
     }
 
@@ -27,14 +29,14 @@ public class ClassBuilderTests
     public void TestAddParameterGenericReturn_AddsCorrectNamespace()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithMethod<List<SomeType>>("TestMethod",
+                               .WithMethod<List<SomeClass>>("TestMethod",
                                                            m => m.WithBody(
                                                            b => b.AddStatement("return new List<TestType>();")));
         var nspace = classBuilder.GetRequiredNamespaces();
 
         Assert.Equal(2, nspace.Count());
         Assert.Contains("System.Collections.Generic", nspace);
-        Assert.Contains("G4ME.SourceBuilder.Tests", nspace);
+        Assert.Contains("G4ME.SourceBuilder.Tests.Objects", nspace);
     }
 
     [Fact]
@@ -84,7 +86,7 @@ public class ClassBuilderTests
             .FirstOrDefault(p => p.Identifier.ValueText == "TestProperty");
 
         Assert.NotNull(propertyDeclaration);
-        Assert.Equal("Int32", propertyDeclaration.Type.ToString());
+        Assert.Equal("int", propertyDeclaration.Type.ToString());
         Assert.NotNull(propertyDeclaration.AccessorList);
         Assert.Contains(propertyDeclaration.AccessorList.Accessors, a => a.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.GetAccessorDeclaration);
         Assert.Contains(propertyDeclaration.AccessorList.Accessors, a => a.Kind() == Microsoft.CodeAnalysis.CSharp.SyntaxKind.SetAccessorDeclaration);
@@ -121,7 +123,7 @@ public class ClassBuilderTests
         Assert.NotNull(firstParameter.Type);
 
         // Now it's safe to call ToString() since we've asserted that Type is not null
-        Assert.Equal("Int32", firstParameter.Type.ToString());
+        Assert.Equal("int", firstParameter.Type.ToString());
 
         Assert.NotNull(methodDeclaration.Body);
         // Additional assertions can be made about the method's body, return type, attributes, etc.
@@ -151,7 +153,7 @@ public class ClassBuilderTests
         Assert.NotNull(firstParameter.Type);
 
         // Now it's safe to call ToString() since we've asserted that Type is not null
-        Assert.Equal("Int32", firstParameter.Type.ToString());
+        Assert.Equal("int", firstParameter.Type.ToString());
     }
 
     [Fact]

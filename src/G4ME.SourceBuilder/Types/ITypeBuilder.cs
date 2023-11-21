@@ -4,7 +4,7 @@ public interface ITypeBuilder
 
 {
     string Namespace { get; }
-    string TypeName { get; }
+    string ClassName { get; }
 
     IEnumerable<string> GetRequiredNamespaces();
     TypeDeclarationSyntax Build();

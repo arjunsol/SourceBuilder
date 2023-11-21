@@ -1,4 +1,6 @@
-﻿namespace G4ME.SourceBuilder.Tests.Unit;
+﻿using G4ME.SourceBuilder.Tests.Objects;
+
+namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class AttributeBuilderTests
 {
@@ -53,12 +55,12 @@ public class AttributeBuilderTests
     public void TestAddAttributeRemovesAttributeSuffix_RemovesSuffixCorrectly()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<TestAttribute>();
+        attributeBuilder.AddAttribute<SomeAttribute>();
 
         var attributeList = attributeBuilder.Build();
         var attribute = attributeList.First().Attributes.First();
 
-        Assert.Equal("Test", attribute.Name.ToString());
+        Assert.Equal("Some", attribute.Name.ToString());
     }
 
     [Fact]
