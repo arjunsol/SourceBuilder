@@ -1,0 +1,21 @@
+﻿[JsonSerializable(typeof(TestMethod))]
+[Another()]
+public class TestClass : SomeClass, ISomeInterface
+{
+    public string Message { get; set; }
+
+    public TestClass(string defaultMessage)
+    {
+        Message = defaultMessage;
+    }
+
+    public void TestMethod()
+    {
+        Console.WriteLine(Message);
+    }
+
+    public void SetMessage(string message)
+    {
+        Message = message;
+    }
+}

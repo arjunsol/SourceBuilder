@@ -25,7 +25,7 @@
         }
 
         [Fact]
-        public void Builder_ToString_ReturnsCorrectCodeString()
+        public void Builder_ToString_ReturnsCodeContainingCorrectStrings()
         {
             var builder = new Builder()
                 .SetNamespace("MyNamespace")

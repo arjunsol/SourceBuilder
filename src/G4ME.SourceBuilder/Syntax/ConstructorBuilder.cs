@@ -7,7 +7,8 @@ public class ConstructorBuilder(ClassBuilder parent)
     private readonly BlockBuilder _bodyBuilder = new();
 
     private ConstructorDeclarationSyntax _constructorDeclaration = SyntaxFactory.ConstructorDeclaration(parent.ClassName)
-                                                                   .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
+                                                                                    .AddModifiers(SyntaxFactory.Token(
+                                                                                            SyntaxKind.PublicKeyword));
 
     public ConstructorBuilder Parameter<T>(string parameterName)
     {
@@ -17,6 +18,11 @@ public class ConstructorBuilder(ClassBuilder parent)
         _parameters.Add(parameter);
         _parentBuilder.AddNamespace<T>();
         return this;
+    }
+
+    public static void Empty()
+    {
+        // Do Nothing
     }
 
     public ConstructorBuilder WithBody(Action<BlockBuilder> bodyBuilderAction)
@@ -34,5 +40,5 @@ public class ConstructorBuilder(ClassBuilder parent)
     }
 
     public ClassBuilder EndConstructor() => _parentBuilder;
-
+       
 }

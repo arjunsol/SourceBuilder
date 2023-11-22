@@ -1,0 +1,12 @@
+﻿public class TestClass
+{
+    public void TestMethod()
+    {
+        Console.WriteLine(GetMessage());
+    }
+
+    public string GetMessage()
+    {
+        return "Hello World!";
+    }
+}

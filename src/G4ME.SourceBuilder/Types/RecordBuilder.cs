@@ -60,7 +60,9 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : IRe
     {
         AddNamespace<T>();
 
-        var methodBuilder = new MethodBuilder(this, typeof(T).Name, methodName);
+        string returnType = TypeName.ValueOf<T>();
+
+        var methodBuilder = new MethodBuilder(this, returnType, methodName);
         methodConfigurator(methodBuilder);
         _recordDeclaration = _recordDeclaration.AddMembers(methodBuilder.Build());
 

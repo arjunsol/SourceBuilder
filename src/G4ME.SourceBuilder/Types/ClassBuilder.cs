@@ -72,8 +72,10 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
     public ClassBuilder WithMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
     {
         AddNamespace<T>();
+                
+        string returnType = TypeName.ValueOf<T>();
 
-        var methodBuilder = new MethodBuilder(this, typeof(T).Name, methodName);
+        var methodBuilder = new MethodBuilder(this, returnType, methodName);
         methodConfigurator(methodBuilder);
         _classDeclaration = _classDeclaration.AddMembers(methodBuilder.Build());
 
