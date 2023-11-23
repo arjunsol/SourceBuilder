@@ -72,7 +72,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
 
     //    return this;
     //}
-
+    
     //TODO: Find a way to support methods
     //public RecordBuilder AddMethod(string methodName, Action<MethodBuilder> methodConfigurator)
     //{

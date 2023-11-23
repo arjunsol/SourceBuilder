@@ -1,4 +1,5 @@
 ﻿using G4ME.SourceBuilder.Tests.Objects;
+using G4ME.SourceBuilder.Types;
 
 namespace G4ME.SourceBuilder.Tests.Unit;
 
@@ -12,6 +13,16 @@ public class RecordBuilderTests
 
         Assert.NotNull(recordDeclaration);
         Assert.Equal("MyRecord", recordDeclaration.Identifier.ValueText);
+    }
+
+    [Fact]
+    public void RecordBuilder_CreatesRecordWithCorrectNamespace()
+    {
+        var builder = new RecordBuilder("MyRecord", "MyNamespace");
+        var recordDeclaration = builder.Build() as RecordDeclarationSyntax;
+
+        Assert.NotNull(recordDeclaration);
+        Assert.Equal("MyNamespace", builder.Namespace);
     }
 
     [Fact]
@@ -96,5 +107,13 @@ public class RecordBuilderTests
         var attribute = recordDeclaration.AttributeLists.SelectMany(a => a.Attributes)
             .FirstOrDefault(a => a.Name.ToString() == "Some");
         Assert.NotNull(attribute);
+    }
+
+    [Fact]
+    public void RecordBuilder_ImplementsClass_ThrowsException()
+    {
+        var builder = new RecordBuilder("MyRecord");
+
+        Assert.Throws<ArgumentException>(() => builder.Implements<SomeClass>());
     }
 }

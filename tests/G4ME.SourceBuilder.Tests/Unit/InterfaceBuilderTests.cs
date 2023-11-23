@@ -82,7 +82,13 @@ public class InterfaceBuilderTests
         Assert.Equal("IBaseInterface", interfaceDeclaration.BaseList.Types[0].Type.ToString());
     }
 
-    // Additional tests can be added here to cover more scenarios
+    [Fact]
+    public void InterfaceBuilder_InheritFromClass_ThrowsException()
+    {
+        var builder = new InterfaceBuilder("IMyInterface");        
+        
+        Assert.Throws<ArgumentException>(() => builder.Extends<SomeClass>());        
+    }
 }
 
 // Mock interface used in the tests

@@ -8,8 +8,8 @@
             var builder = new Builder()
                 .SetNamespace("MyNamespace")
                 .AddClass("MyClass", c => c.AddMethod("MyMethod", m => m.Parameter<int>("param")))
-                .AddInterface("IMyInterface", i => i.AddMethod("InterfaceMethod", m => { }));
-                //.AddRecord("MyRecord", r => r.Properties(p => p.Add<string>("MyProperty")));
+                .AddInterface("IMyInterface", i => i.AddMethod("InterfaceMethod", m => { }))
+                .AddRecord("MyRecord", r => r.Parameter<string>("MyParameter"));
 
             var compilationUnit = builder.Build();
 
@@ -18,11 +18,10 @@
             Assert.IsType<NamespaceDeclarationSyntax>(compilationUnit.Members[0]);
 
             var namespaceDeclaration = (NamespaceDeclarationSyntax)compilationUnit.Members[0];
-            //Assert.Equal(3, namespaceDeclaration.Members.Count);
-            Assert.Equal(2, namespaceDeclaration.Members.Count);
+            Assert.Equal(3, namespaceDeclaration.Members.Count);
             Assert.Contains(namespaceDeclaration.Members, m => m is ClassDeclarationSyntax syntax && syntax.Identifier.ValueText == "MyClass");
             Assert.Contains(namespaceDeclaration.Members, m => m is InterfaceDeclarationSyntax syntax && syntax.Identifier.ValueText == "IMyInterface");
-            //Assert.Contains(namespaceDeclaration.Members, m => m is RecordDeclarationSyntax syntax && syntax.Identifier.ValueText == "MyRecord");
+            Assert.Contains(namespaceDeclaration.Members, m => m is RecordDeclarationSyntax syntax && syntax.Identifier.ValueText == "MyRecord");
         }
 
         [Fact]

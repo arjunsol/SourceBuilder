@@ -2,7 +2,7 @@
 using G4ME.SourceBuilder.Tests.Objects;
 using Microsoft.CodeAnalysis;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Verified;
 
 [UsesVerify]
 public class VerifyClassBuilder
@@ -11,7 +11,7 @@ public class VerifyClassBuilder
     public async Task Create_SimpleClass_Verified()
     {
         var classBuilder = new ClassBuilder("SimpleClass");
-        
+
         await BuildAndVerify(classBuilder);
     }
 
@@ -19,7 +19,7 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithAttribute_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .Attributes(a => 
+                               .Attributes(a =>
                                     a.Add<SerializableAttribute>());
 
         await BuildAndVerify(classBuilder);
@@ -61,7 +61,7 @@ public class VerifyClassBuilder
         var classBuilder = new ClassBuilder("TestClass")
                                .Constructor(c => c
                                    .Body(b => b
-                                   .AddLines(@"var thing = ""MyString"";",    
+                                   .AddLines(@"var thing = ""MyString"";",
                                              @"var thung = thing;")));
 
         await BuildAndVerify(classBuilder);
@@ -108,9 +108,9 @@ public class VerifyClassBuilder
                                    .Attributes(a => a
                                        .Add<JsonSerializableAttribute>("typeof(TestMethod)")
                                        .Add<AnotherAttribute>())
-                                   .Extends<SomeClass>().Implements<ISomeInterface>()                                   
+                                   .Extends<SomeClass>().Implements<ISomeInterface>()
                                    .Properties(p => p
-                                       .AddPrivate<string>("Message").Get().Set())                               
+                                       .AddPrivate<string>("Message").Get().Set())
                                    .Constructor(c => c.Parameter<string>("defaultMessage")
                                        .Body("Message = defaultMessage;"))
                                    .AddMethod("TestMethod", m => m //TODO: Methods (like properties and attributes)
@@ -125,8 +125,8 @@ public class VerifyClassBuilder
 
     private static async Task BuildAndVerify(ClassBuilder classBuilder)
     {
-        TypeDeclarationSyntax generatedClass = classBuilder.Build();
-                
+        var generatedClass = classBuilder.Build();
+
         await Verify(generatedClass.NormalizeWhitespace().ToFullString());
     }
 }

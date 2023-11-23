@@ -12,47 +12,53 @@ namespace G4ME.SourceBuilder
         public Builder SetNamespace(string namespaceName)
         {
             _namespace = namespaceName;
+            
             return this;
         }
 
         public Builder AddClass(string className, Action<ClassBuilder> configure)
         {
             ClassBuilder classBuilder = new(className, _namespace);
+            
             configure(classBuilder);
             _typeBuilders.Add(classBuilder);
+            
             return this;
         }
 
         public Builder AddInterface(string interfaceName, Action<InterfaceBuilder> configure)
         {
             InterfaceBuilder interfaceBuilder = new(interfaceName, _namespace);
+            
             configure(interfaceBuilder);
             _typeBuilders.Add(interfaceBuilder);
+            
             return this;
         }
 
         public Builder AddRecord(string recordName, Action<RecordBuilder> configure)
         {
             RecordBuilder recordBuilder = new(recordName, _namespace);
+                        
             configure(recordBuilder);
             _typeBuilders.Add(recordBuilder);
+            
             return this;
         }
 
         private CompilationUnitSyntax BuildCompilationUnit()
         {
             CompilationUnitBuilder compilationBuilder = new([.. _typeBuilders]);
+            
             return compilationBuilder.Build();
         }
 
-        public CompilationUnitSyntax Build()
-        {
-            return BuildCompilationUnit();
-        }
+        public CompilationUnitSyntax Build() => BuildCompilationUnit();
 
         public override string ToString()
         {
             var compilationUnit = BuildCompilationUnit();
+            
             return compilationUnit.NormalizeWhitespace().ToFullString();
         }
     }

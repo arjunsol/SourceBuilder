@@ -64,6 +64,29 @@ public class CompilationUnitBuilderTests
     }
 
     [Fact]
+    public void Build_WithClassAndInterfaceAndRecord_ReturnsCompilationUnitWithMultipleClasses()
+    {
+        // Arrange
+        var classBuilder = new ClassBuilder("TestClass", "TestNamespace");
+        var interfaceBuilder = new InterfaceBuilder("ITestInterface");
+        var recordBuilder = new RecordBuilder("TestRecord");
+
+        var compilationUnitBuilder = new CompilationUnitBuilder(classBuilder, interfaceBuilder, recordBuilder);
+
+        // Act
+        var compilationUnit = compilationUnitBuilder.Build();
+        var declaredTypes = compilationUnit.DescendantNodes()
+                                             .OfType<TypeDeclarationSyntax>()
+                                             .ToList();
+
+        // Assert
+        Assert.Equal(3, declaredTypes.Count);
+        Assert.Contains(declaredTypes, c => c.Identifier.Text == "TestClass");
+        Assert.Contains(declaredTypes, c => c.Identifier.Text == "ITestInterface");
+        Assert.Contains(declaredTypes, c => c.Identifier.Text == "TestRecord");
+    }
+
+    [Fact]
     public void Build_WithClassNamespace_CreatesCorrectNamespace()
     {
         // Arrange

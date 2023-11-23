@@ -1,6 +1,6 @@
 ﻿namespace G4ME.SourceBuilder.Syntax;
 
-public class PropertyDeclarationCollection
+public class PropertyCollection
 {
     private readonly List<PropertyDeclarationSyntax> _properties = [ ];
     private int _currentIndex = -1;
@@ -9,7 +9,7 @@ public class PropertyDeclarationCollection
     {
         get
         {
-            if (!_properties.Any())
+            if (_properties.Count == 0)
             {
                 throw new InvalidOperationException("No current property. Ensure a property is added before accessing.");
             }

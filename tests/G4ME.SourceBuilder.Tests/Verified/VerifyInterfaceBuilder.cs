@@ -2,7 +2,7 @@
 using G4ME.SourceBuilder.Types;
 using Microsoft.CodeAnalysis;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Verified;
 
 [UsesVerify]
 public class VerifyInterfaceBuilder
@@ -11,7 +11,7 @@ public class VerifyInterfaceBuilder
     public async Task CreateBasicInterfaceTest()
     {
         var builder = new InterfaceBuilder("MyInterface");
-        
+
         await BuildAndVerify(builder);
     }
 
@@ -47,7 +47,8 @@ public class VerifyInterfaceBuilder
     public async Task InterfaceWithAttributesTest()
     {
         var builder = new InterfaceBuilder("MyInterface")
-            .WithAttributes(ab => ab.Add<SomeAttribute>());
+            .WithAttributes(ab => ab.Add<SomeAttribute>())
+            .AddMethod("Thing", mb => mb.Attributes(a => a.Add<SomeAttribute>()));
 
         await BuildAndVerify(builder);
     }

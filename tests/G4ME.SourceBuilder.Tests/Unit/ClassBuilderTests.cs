@@ -178,4 +178,12 @@ public class ClassBuilderTests
         // Additional assertions for the attribute's arguments, etc.
     }
 
+    [Fact]
+    public void ClassBuilder_ImplementsClass_ThrowsException()
+    {
+        var builder = new ClassBuilder("MyRecord");
+
+        Assert.Throws<ArgumentException>(() => builder.Implements<SomeClass>());
+    }
+
 }

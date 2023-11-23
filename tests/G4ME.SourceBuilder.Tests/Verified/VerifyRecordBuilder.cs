@@ -2,7 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Verified;
 
 [UsesVerify]
 public class VerifyRecordBuilder
@@ -75,7 +75,7 @@ public class VerifyRecordBuilder
 
     private static async Task BuildAndVerify(RecordBuilder recordBuilder)
     {
-        TypeDeclarationSyntax generatedRecord = recordBuilder.Build();
+        var generatedRecord = recordBuilder.Build();
 
         await Verify(generatedRecord.NormalizeWhitespace().ToFullString());
     }

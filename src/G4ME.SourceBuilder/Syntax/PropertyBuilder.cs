@@ -1,71 +1,65 @@
-﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
-namespace G4ME.SourceBuilder.Syntax
+public class PropertyBuilder
 {
-    public class PropertyBuilder
+    private const SyntaxKind DEFAULT_MODIFIER = SyntaxKind.PublicKeyword;
+    private readonly PropertyCollection _properites = new();
+
+    public PropertyBuilder Add<T>(string propertyName) => Add<T>(propertyName, DEFAULT_MODIFIER);
+
+    public PropertyBuilder AddPrivate<T>(string propertyName) => Add<T>(propertyName, SyntaxKind.PrivateKeyword);
+
+    public PropertyBuilder Get()
     {
-        private const SyntaxKind DEFAULT_MODIFIER = SyntaxKind.PublicKeyword;
-        private readonly PropertyDeclarationCollection _properites = new();
+        var getter = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
 
-        public PropertyBuilder Add<T>(string propertyName) => Add<T>(propertyName, DEFAULT_MODIFIER);
+        AddAccessor(getter);
 
-        public PropertyBuilder AddPrivate<T>(string propertyName) => Add<T>(propertyName, SyntaxKind.PrivateKeyword);
+        return this;
+    }
 
-        public PropertyBuilder Get()
-        {
-            var getter = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+    public PropertyBuilder Set()
+    {
+        var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
 
-            AddAccessor(getter);
+        AddAccessor(setter);
 
-            return this;
-        }
+        return this;
+    }
 
-        public PropertyBuilder Set()
-        {
-            var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+    public PropertyBuilder PrivateSet()
+    {
+        var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+            .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)))
+            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
 
-            AddAccessor(setter);
+        AddAccessor(setter);
 
-            return this;
-        }
+        return this;
+    }
 
-        public PropertyBuilder PrivateSet()
-        {
-            var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)))
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+    public PropertyDeclarationSyntax[] Build() => _properites.Build();
 
-            AddAccessor(setter);
+    private PropertyBuilder Add<T>(string propertyName, SyntaxKind modifier)
+    {
+        string typeName = TypeName.ValueOf<T>();
 
-            return this;
-        }
+        var property = SyntaxFactory.PropertyDeclaration(
+            SyntaxFactory.ParseTypeName(typeName),
+            SyntaxFactory.Identifier(propertyName))
+            .AddModifiers(SyntaxFactory.Token(modifier));
 
-        public PropertyDeclarationSyntax[] Build() => _properites.Build();
+        _properites.AddProperty(property);
 
-        private PropertyBuilder Add<T>(string propertyName, SyntaxKind modifier)
-        {
-            string typeName = TypeName.ValueOf<T>();
+        return this;
+    }
 
-            var property = SyntaxFactory.PropertyDeclaration(
-                SyntaxFactory.ParseTypeName(typeName),
-                SyntaxFactory.Identifier(propertyName))
-                .AddModifiers(SyntaxFactory.Token(modifier));
-
-            _properites.AddProperty(property);
-
-            return this;
-        }
-
-        private void AddAccessor(AccessorDeclarationSyntax accessor)
-        {
-            var currentProperty = _properites.CurrentProperty;
-            var updatedProperty = currentProperty.AddAccessorListAccessors(accessor);
-            _properites.UpdateCurrentProperty(updatedProperty);
-        }
+    private void AddAccessor(AccessorDeclarationSyntax accessor)
+    {
+        var currentProperty = _properites.CurrentProperty;
+        var updatedProperty = currentProperty.AddAccessorListAccessors(accessor);
+        _properites.UpdateCurrentProperty(updatedProperty);
     }
 }
