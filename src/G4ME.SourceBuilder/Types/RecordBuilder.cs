@@ -1,8 +1,6 @@
-﻿using G4ME.SourceBuilder.Syntax;
+﻿namespace G4ME.SourceBuilder.Types;
 
-namespace G4ME.SourceBuilder.Types;
-
-public class RecordBuilder(string recordName, string recordNamespace = "") : IRecordBuilder
+public class RecordBuilder(string recordName, string recordNamespace = "") : ITypeBuilder
 {
     private readonly NamespaceCollection _requiredNamespaces = new(recordNamespace);
     private RecordDeclarationSyntax _recordDeclaration = SyntaxFactory.RecordDeclaration(SyntaxFactory.Token(SyntaxKind.RecordKeyword), recordName)
@@ -35,14 +33,11 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : IRe
         return this;
     }
 
-    public RecordBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator)
+    public RecordBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
     {
-        var propertyType = TypeName.ValueOf<T>();
-        var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
+        var propertyBuilder = new PropertyBuilder();
         propertyConfigurator(propertyBuilder);
         _recordDeclaration = _recordDeclaration.AddMembers(propertyBuilder.Build());
-
-        AddNamespace<T>();
 
         return this;
     }

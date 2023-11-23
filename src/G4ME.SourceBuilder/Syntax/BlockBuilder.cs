@@ -4,14 +4,14 @@ public class BlockBuilder
 {
     private readonly List<StatementSyntax> _statements = [];
 
-    public BlockBuilder AddStatements(params string[] statements)
+    public BlockBuilder AddLines(params string[] statements)
     {
-        foreach (var statement in statements) AddStatement(statement);
+        foreach (var statement in statements) AddLine(statement);
 
         return this;
     }
 
-    public BlockBuilder AddStatement(string statement)
+    public BlockBuilder AddLine(string statement)
     {
         // Ensure the statement ends with a semicolon
         if (!statement.TrimEnd().EndsWith(';'))

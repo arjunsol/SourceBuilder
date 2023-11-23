@@ -56,10 +56,10 @@ public class ConstructorBuilderTests
     {
         var classBuilder = new ClassBuilder("TestClass");
         var constructorBuilder = new ConstructorBuilder(classBuilder);
-        constructorBuilder.WithBody(body => { /* body configuration */ });
+        constructorBuilder.Body(body => { /* body configuration */ });
 
         var constructor = constructorBuilder.Build();
-
+        // TODO: Add body checks
         // Assertions for the body content, depending on how BlockBuilder is implemented
     }
 
@@ -68,22 +68,11 @@ public class ConstructorBuilderTests
     {
         var classBuilder = new ClassBuilder("TestClass");
         var constructorBuilder = new ConstructorBuilder(classBuilder);
-        constructorBuilder.Parameter<int>("param1").WithBody(body => { /* body configuration */ });
+        constructorBuilder.Parameter<int>("param1").Body(body => { /* body configuration */ });
 
         var constructor = constructorBuilder.Build();
-
+        // TODO: Add body checks
         Assert.NotNull(constructor.ParameterList);
         Assert.NotNull(constructor.Body);
-    }
-
-    [Fact]
-    public void TestEndConstructorReturnsParentBuilder_ReturnsParentBuilder()
-    {
-        var classBuilder = new ClassBuilder("TestClass");
-        var constructorBuilder = new ConstructorBuilder(classBuilder);
-
-        var returnedBuilder = constructorBuilder.EndConstructor();
-
-        Assert.Equal(classBuilder, returnedBuilder);
     }
 }

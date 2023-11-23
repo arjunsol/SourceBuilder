@@ -32,14 +32,11 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
         return this;
     }
 
-    public InterfaceBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator)
+    public InterfaceBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
     {
-        var propertyType = TypeName.ValueOf<T>();
-        var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
+        var propertyBuilder = new PropertyBuilder();
         propertyConfigurator(propertyBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(propertyBuilder.Build());
-
-        AddNamespace<T>();
 
         return this;
     }

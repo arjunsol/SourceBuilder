@@ -9,5 +9,5 @@ public interface IRecordBuilder : ITypeBuilder
     RecordBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator);
     RecordBuilder WithMethod(string methodName, Action<MethodBuilder> methodConfigurator);
     RecordBuilder WithMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator);
-    RecordBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator);
+    RecordBuilder Property<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator);
 }

@@ -15,7 +15,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder(string name) : this(name, string.Empty) { }
 
-    public ClassBuilder InheritsFrom<TBase>() where TBase : class
+    public ClassBuilder Extends<TBase>() where TBase : class
     {
         AddNamespace<TBase>();
 
@@ -27,7 +27,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         return this;
     }
 
-    public ClassBuilder ImplementsInterface<TInterface>() where TInterface : class
+    public ClassBuilder Implements<TInterface>() where TInterface : class
     {
         AddNamespace<TInterface>();
 
@@ -36,31 +36,47 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
                                 SyntaxFactory.SimpleBaseType(
                                     SyntaxFactory.ParseTypeName(interfaceName)));
 
-        return this;
+        return this;    
     }
 
-    public ClassBuilder WithProperty<T>(string propertyName, Action<PropertyBuilder> propertyConfigurator)
+    public ClassBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        AddNamespace<T>();
+        AttributeBuilder attributeBuilder = new();
 
-        var propertyType = TypeName.ValueOf<T>();
-        var propertyBuilder = new PropertyBuilder(propertyName, propertyType);
-        propertyConfigurator(propertyBuilder);
-        _classDeclaration = _classDeclaration.AddMembers(propertyBuilder.Build());
-
-        return this;
-    }
-
-    public ClassBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
-    {
-        var attributeBuilder = new AttributeBuilder();
         attributeConfigurator(attributeBuilder);
         _classDeclaration = _classDeclaration.WithAttributeLists(attributeBuilder.Build());
 
         return this;
     }
 
-    public ClassBuilder WithConstructor(Action<ConstructorBuilder> constructorConfigurator)
+    public ClassBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
+    {
+        PropertyBuilder propertyBuilder = new();
+        
+        propertyConfigurator(propertyBuilder);
+        _classDeclaration = _classDeclaration.AddMembers(propertyBuilder.Build());
+
+        return this;
+    }
+
+    //public ClassBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
+    //{
+    //    var propertyBuilder = new PropertyBuilder();
+    //    propertyConfigurator(propertyBuilder);
+    //    _classDeclaration = _classDeclaration.AddMembers(propertyBuilder.Build());
+
+    //    return this;
+    //}
+
+    public ClassBuilder AddConstructor()
+    {
+        var constrcutorBuilder = new ConstructorBuilder(this);
+        _classDeclaration = _classDeclaration.AddMembers(constrcutorBuilder.Build());
+
+        return this;
+    }
+
+    public ClassBuilder Constructor(Action<ConstructorBuilder> constructorConfigurator)
     {
         var constructorBuilder = new ConstructorBuilder(this);
         constructorConfigurator(constructorBuilder);
@@ -69,7 +85,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         return this;
     }
 
-    public ClassBuilder WithMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
+    public ClassBuilder AddMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
     {
         AddNamespace<T>();
                 
@@ -82,7 +98,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         return this;
     }
 
-    public ClassBuilder WithMethod(string methodName, Action<MethodBuilder> methodConfigurator)
+    public ClassBuilder AddMethod(string methodName, Action<MethodBuilder> methodConfigurator)
     {
         var methodBuilder = new MethodBuilder(this, methodName);
         methodConfigurator(methodBuilder);

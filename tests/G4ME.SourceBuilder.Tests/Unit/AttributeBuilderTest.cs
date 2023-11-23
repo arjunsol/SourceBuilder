@@ -8,7 +8,7 @@ public class AttributeBuilderTests
     public void TestAddAttribute_AddsAttributeCorrectly()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<SomeAttribute>("arg1", "arg2");
+        attributeBuilder.Add<SomeAttribute>("arg1", "arg2");
 
         var attributeList = attributeBuilder.Build();
         var attribute = attributeList.First().Attributes.First();
@@ -24,7 +24,7 @@ public class AttributeBuilderTests
     public void TestAddAttributeWithNoArguments_AddsAttributeWithoutArguments()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<SomeAttribute>();
+        attributeBuilder.Add<SomeAttribute>();
 
         var attributeList = attributeBuilder.Build();
         var attribute = attributeList.First().Attributes.First();
@@ -38,8 +38,8 @@ public class AttributeBuilderTests
     public void TestAddMultipleAttributes_AddsAllAttributes()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<SomeAttribute>("arg1");
-        attributeBuilder.AddAttribute<AnotherAttribute>("arg2", "arg3");
+        attributeBuilder.Add<SomeAttribute>("arg1");
+        attributeBuilder.Add<AnotherAttribute>("arg2", "arg3");
 
         var attributeList = attributeBuilder.Build();
         Assert.Equal(2, attributeList.Count);
@@ -55,7 +55,7 @@ public class AttributeBuilderTests
     public void TestAddAttributeRemovesAttributeSuffix_RemovesSuffixCorrectly()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<SomeAttribute>();
+        attributeBuilder.Add<SomeAttribute>();
 
         var attributeList = attributeBuilder.Build();
         var attribute = attributeList.First().Attributes.First();
@@ -67,7 +67,7 @@ public class AttributeBuilderTests
     public void TestBuildWithAttributes_BuildsCorrectly()
     {
         var attributeBuilder = new AttributeBuilder();
-        attributeBuilder.AddAttribute<SomeAttribute>("arg");
+        attributeBuilder.Add<SomeAttribute>("arg");
 
         var attributeList = attributeBuilder.Build();
 

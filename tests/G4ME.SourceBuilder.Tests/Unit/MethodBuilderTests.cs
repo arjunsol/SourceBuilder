@@ -64,7 +64,7 @@ public class MethodBuilderTests
     public void TestWithBody_AddsBodyCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "string", "TestMethod");
-        methodBuilder.WithBody(body => body.AddStatement("return _thing;"));
+        methodBuilder.Body(body => body.AddLine("return _thing;"));
 
         var method = methodBuilder.Build();
 
@@ -76,7 +76,7 @@ public class MethodBuilderTests
     public void TestWithAttributes_AddsAttributesCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-        methodBuilder.WithAttributes(attrs => attrs.AddAttribute<JsonSerializableAttribute>());
+        methodBuilder.Attributes(attrs => attrs.Add<JsonSerializableAttribute>());
 
         var method = methodBuilder.Build();
 
@@ -87,7 +87,7 @@ public class MethodBuilderTests
     public void TestBuildMethod_BuildsMethodCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-        methodBuilder.Parameter<int>("param1").WithBody(body => body.AddStatement("return;"));
+        methodBuilder.Parameter<int>("param1").Body(body => body.AddLine("return;"));
 
         var method = methodBuilder.Build();
 

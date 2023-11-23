@@ -2,7 +2,7 @@
 [Another()]
 public class TestClass : SomeClass, ISomeInterface
 {
-    public string Message { get; set; }
+    private string Message { get; set; }
 
     public TestClass(string defaultMessage)
     {

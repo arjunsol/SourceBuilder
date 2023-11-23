@@ -7,9 +7,9 @@
         {
             var builder = new Builder()
                 .SetNamespace("MyNamespace")
-                .AddClass("MyClass", c => c.WithMethod("MyMethod", m => m.Parameter<int>("param")))
+                .AddClass("MyClass", c => c.AddMethod("MyMethod", m => m.Parameter<int>("param")))
                 .AddInterface("IMyInterface", i => i.WithMethod("InterfaceMethod", m => { }))
-                .AddRecord("MyRecord", r => r.WithProperty<int>("MyProperty", p => { }));
+                .AddRecord("MyRecord", r => r.Properties(p => p.Add<string>("MyProperty")));
 
             var compilationUnit = builder.Build();
 
@@ -29,7 +29,7 @@
         {
             var builder = new Builder()
                 .SetNamespace("MyNamespace")
-                .AddClass("MyClass", c => c.WithMethod("MyMethod", m => m.Parameter<int>("param")));
+                .AddClass("MyClass", c => c.AddMethod("MyMethod", m => m.Parameter<int>("param")));
 
             var codeString = builder.ToString();
             Assert.NotNull(codeString);

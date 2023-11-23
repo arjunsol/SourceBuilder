@@ -1,0 +1,8 @@
+﻿public class TestClass
+{
+    public TestClass()
+    {
+        var thing = "MyString";
+        var thung = thing;
+    }
+}

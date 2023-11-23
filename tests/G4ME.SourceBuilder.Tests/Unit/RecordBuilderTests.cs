@@ -42,7 +42,7 @@ public class RecordBuilderTests
     public void RecordBuilder_AddsPropertyCorrectly()
     {
         var builder = new RecordBuilder("MyRecord")
-            .WithProperty<int>("MyProperty", pb => { });
+            .Properties(p => p.Add<int>("MyProperty"));
 
         var recordDeclaration = builder.Build();
         var property = recordDeclaration.Members
@@ -58,8 +58,8 @@ public class RecordBuilderTests
     {
         var classBuilder = new RecordBuilder("TestClass")
                                .WithMethod<List<SomeClass>>("TestMethod",
-                                                           m => m.WithBody(
-                                                           b => b.AddStatement("return new List<TestType>();")));
+                                                           m => m.Body(
+                                                           b => b.AddLine("return new List<TestType>();")));
         var nspace = classBuilder.GetRequiredNamespaces();
 
         Assert.Equal(2, nspace.Count());
@@ -87,7 +87,7 @@ public class RecordBuilderTests
     public void RecordBuilder_AddsAttributesCorrectly()
     {
         var builder = new RecordBuilder("MyRecord")
-            .WithAttributes(ab => ab.AddAttribute<SomeAttribute>());
+            .WithAttributes(ab => ab.Add<SomeAttribute>());
 
         var recordDeclaration = builder.Build();
 

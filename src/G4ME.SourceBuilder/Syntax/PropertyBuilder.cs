@@ -1,35 +1,71 @@
-﻿namespace G4ME.SourceBuilder.Syntax;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 
-public class PropertyBuilder(string propertyName, string propertyType)
+namespace G4ME.SourceBuilder.Syntax
 {
-    private PropertyDeclarationSyntax _propertyDeclaration = SyntaxFactory.PropertyDeclaration(
-            SyntaxFactory.ParseTypeName(propertyType), propertyName)
-            .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
-
-    public PropertyBuilder WithGetter()
+    public class PropertyBuilder
     {
-        var getter = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
-        _propertyDeclaration = _propertyDeclaration.AddAccessorListAccessors(getter);
-        return this;
-    }
+        private const SyntaxKind DEFAULT_MODIFIER = SyntaxKind.PublicKeyword;
+        private readonly PropertyDeclarationCollection _properites = new PropertyDeclarationCollection();
 
-    public PropertyBuilder WithSetter()
-    {
-        var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
-        _propertyDeclaration = _propertyDeclaration.AddAccessorListAccessors(setter);
-        return this;
-    }
+        public PropertyBuilder Add<T>(string propertyName) => Add<T>(propertyName, DEFAULT_MODIFIER);
 
-    public PropertyBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
-    {
-        var attributeBuilder = new AttributeBuilder();
-        attributeConfigurator(attributeBuilder);
-        _propertyDeclaration = _propertyDeclaration.WithAttributeLists(attributeBuilder.Build());
-        return this;
-    }
+        public PropertyBuilder AddPrivate<T>(string propertyName) => Add<T>(propertyName, SyntaxKind.PrivateKeyword);
 
-    public PropertyDeclarationSyntax Build() => _propertyDeclaration;
-    
+        public PropertyBuilder Get()
+        {
+            var getter = SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+            AddAccessor(getter);
+
+            return this;
+        }
+
+        public PropertyBuilder Set()
+        {
+            var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+            AddAccessor(setter);
+
+            return this;
+        }
+
+        public PropertyBuilder PrivateSet()
+        {
+            var setter = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithModifiers(SyntaxFactory.TokenList(SyntaxFactory.Token(SyntaxKind.PrivateKeyword)))
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+            AddAccessor(setter);
+
+            return this;
+        }
+
+        public PropertyDeclarationSyntax[] Build() => _properites.Build();
+
+        private PropertyBuilder Add<T>(string propertyName, SyntaxKind modifier)
+        {
+            string typeName = TypeName.ValueOf<T>();
+
+            var property = SyntaxFactory.PropertyDeclaration(
+                SyntaxFactory.ParseTypeName(typeName),
+                SyntaxFactory.Identifier(propertyName))
+                .AddModifiers(SyntaxFactory.Token(modifier));
+
+            _properites.AddProperty(property);
+
+            return this;
+        }
+
+        private void AddAccessor(AccessorDeclarationSyntax accessor)
+        {
+            var currentProperty = _properites.CurrentProperty;
+            var updatedProperty = currentProperty.AddAccessorListAccessors(accessor);
+            _properites.UpdateCurrentProperty(updatedProperty);
+        }
+    }
 }

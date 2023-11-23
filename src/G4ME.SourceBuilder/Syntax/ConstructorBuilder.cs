@@ -20,12 +20,13 @@ public class ConstructorBuilder(ClassBuilder parent)
         return this;
     }
 
-    public static void Empty()
+    public ConstructorBuilder Body(params string[] statements)
     {
-        // Do Nothing
-    }
+        _bodyBuilder.AddLines(statements);
+        return this;
+    } // TODO: Potentially add direct body method?
 
-    public ConstructorBuilder WithBody(Action<BlockBuilder> bodyBuilderAction)
+    public ConstructorBuilder Body(Action<BlockBuilder> bodyBuilderAction)
     {
         bodyBuilderAction(_bodyBuilder);
         return this;

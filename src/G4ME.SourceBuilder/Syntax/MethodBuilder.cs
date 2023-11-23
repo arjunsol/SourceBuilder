@@ -21,16 +21,25 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
             .WithType(SyntaxFactory.ParseTypeName(parameterType));
         _parameters.Add(parameter);
         _parentBuilder.AddNamespace<T>();
+        
         return this;
     }
 
-    public MethodBuilder WithBody(Action<BlockBuilder> bodyBuilderAction)
+    public MethodBuilder Body(Action<BlockBuilder> bodyBuilderAction)
     {
         bodyBuilderAction(_bodyBuilder);
+        
         return this;
     }
 
-    public MethodBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
+    public MethodBuilder Body(params string[] statements)
+    {
+        _bodyBuilder.AddLines(statements);
+
+        return this;
+    }
+
+    public MethodBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
         var attributeBuilder = new AttributeBuilder();
         attributeConfigurator(attributeBuilder);

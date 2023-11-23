@@ -44,7 +44,8 @@ public class InterfaceBuilderTests
     public void InterfaceBuilder_AddsPropertyCorrectly()
     {
         var builder = new InterfaceBuilder("IMyInterface");
-        builder.WithProperty<int>("TestProperty", pb => { });
+        builder.Properties(pb => pb.Add<int>("TestProperty"));
+
 
         var interfaceDeclaration = builder.Build();
 
@@ -58,7 +59,7 @@ public class InterfaceBuilderTests
     public void InterfaceBuilder_AddsAttributesCorrectly()
     {
         var builder = new InterfaceBuilder("IMyInterface");
-        builder.WithAttributes(ab => ab.AddAttribute<SomeAttribute>());
+        builder.WithAttributes(ab => ab.Add<SomeAttribute>());
 
         var interfaceDeclaration = builder.Build();
 

@@ -29,9 +29,9 @@ public class ClassBuilderTests
     public void TestAddParameterGenericReturn_AddsCorrectNamespace()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithMethod<List<SomeClass>>("TestMethod",
-                                                           m => m.WithBody(
-                                                           b => b.AddStatement("return new List<TestType>();")));
+                               .AddMethod<List<SomeClass>>("TestMethod",
+                                                           m => m.Body(
+                                                           b => b.AddLine("return new List<TestType>();")));
         var nspace = classBuilder.GetRequiredNamespaces();
 
         Assert.Equal(2, nspace.Count());
@@ -43,7 +43,7 @@ public class ClassBuilderTests
     public void TestInheritsFromValidBaseClass_AddsBaseClass()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.InheritsFrom<SomeBaseClass>();
+        classBuilder.Extends<SomeBaseClass>();
 
         var classDeclaration = classBuilder.Build();
 
@@ -58,7 +58,7 @@ public class ClassBuilderTests
     public void TestImplementsInterface_ValidInterface_AddsInterface()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.ImplementsInterface<ISomeInterface>();
+        classBuilder.Implements<ISomeInterface>();
 
         var classDeclaration = classBuilder.Build();
 
@@ -70,17 +70,19 @@ public class ClassBuilderTests
     public void TestWithProperty_AddsPropertyCorrectly()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.WithProperty<int>("TestProperty", propertyBuilder =>
+        
+        classBuilder.Properties(p =>
         {
-            propertyBuilder.WithGetter().WithSetter()
-                          .WithAttributes(attributeBuilder =>
-                          {
-                              attributeBuilder.AddAttribute<SomeAttribute>();
-                              // Additional attribute configurations
-                          });
+            p.Add<int>("TestProperty").Get().Set();
+                          //.WithAttributes(attributeBuilder =>
+                          //{
+                          //    attributeBuilder.Add<SomeAttribute>();
+                          //    // Additional attribute configurations
+                          //}); //TODO: Add attributes to properties
         });
 
         var classDeclaration = classBuilder.Build();
+        
         var propertyDeclaration = classDeclaration.Members
             .OfType<PropertyDeclarationSyntax>()
             .FirstOrDefault(p => p.Identifier.ValueText == "TestProperty");
@@ -97,11 +99,11 @@ public class ClassBuilderTests
     public void TestWithMethod_AddsMethodCorrectly()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.WithMethod("TestMethod", methodBuilder =>
+        classBuilder.AddMethod("TestMethod", methodBuilder =>
         {
-            methodBuilder.Parameter<int>("param1").WithBody(bodyBuilder =>
+            methodBuilder.Parameter<int>("param1").Body(bodyBuilder =>
             {
-                bodyBuilder.AddStatement("return param1;");
+                bodyBuilder.AddLine("return param1;");
             });
         });
 
@@ -133,7 +135,7 @@ public class ClassBuilderTests
     public void TestWithConstructor_AddsConstructorCorrectly()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.WithConstructor(constructorBuilder =>
+        classBuilder.Constructor(constructorBuilder =>
         {
             constructorBuilder.Parameter<int>("param1");
             // Additional constructor configuration as needed
@@ -160,9 +162,9 @@ public class ClassBuilderTests
     public void TestWithAttributes_AddsAttributesCorrectly()
     {
         var classBuilder = new ClassBuilder("TestClass");
-        classBuilder.WithAttributes(attributeBuilder =>
+        classBuilder.Attributes(attributeBuilder =>
         {
-            attributeBuilder.AddAttribute<SomeAttribute>();
+            attributeBuilder.Add<SomeAttribute>();
             // Additional attribute configuration as needed
         });
 

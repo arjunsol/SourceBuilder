@@ -4,9 +4,10 @@ public class AttributeBuilder
 {
     private readonly List<AttributeSyntax> _attributes = [];
 
-    public AttributeBuilder AddAttribute<TAttribute>(params string[] arguments) where TAttribute : Attribute
+    public AttributeBuilder Add<TAttribute>(params string[] arguments) where TAttribute : Attribute
     {
         var attributeName = typeof(TAttribute).Name;
+        
         if (attributeName.EndsWith("Attribute"))
         {
             attributeName = attributeName[0..^9]; // Remove "Attribute" suffix
@@ -18,6 +19,7 @@ public class AttributeBuilder
 
         var attribute = SyntaxFactory.Attribute(SyntaxFactory.ParseName(attributeName), argumentList);
         _attributes.Add(attribute);
+        
         return this;
     }
 

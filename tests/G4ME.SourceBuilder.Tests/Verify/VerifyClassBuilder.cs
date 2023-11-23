@@ -19,8 +19,8 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithAttribute_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithAttributes(a => 
-                                    a.AddAttribute<SerializableAttribute>());
+                               .Attributes(a => 
+                                    a.Add<SerializableAttribute>());
 
         await BuildAndVerify(classBuilder);
     }
@@ -29,7 +29,7 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithDefaultConstrcutor_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithConstructor(c => ConstructorBuilder.Empty());
+                               .AddConstructor();
 
         await BuildAndVerify(classBuilder);
     }
@@ -38,9 +38,19 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithConstrcutorBody_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithConstructor(c => c
-                                    .WithBody(b => b
-                                        .AddStatement(@"var thing = ""MyString"";")));
+                               .Constructor(c => c
+                                   .Body(b => b
+                                   .AddLine(@"var thing = ""MyString"";")));
+
+        await BuildAndVerify(classBuilder);
+    }
+
+    [Fact]
+    public async Task Create_ClassWithConstuctorBody_Verified()
+    {
+        var classBuilder = new ClassBuilder("TestClass")
+                               .Constructor(c => c
+                                   .Body(@"var thing = ""MyString"";"));
 
         await BuildAndVerify(classBuilder);
     }
@@ -49,10 +59,10 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithConstrcutorMultilineBody_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithConstructor(c => c
-                                    .WithBody(b => b
-                                        .AddStatements(@"var thing = ""MyString"";",    
-                                                       @"var thung = thing;")));
+                               .Constructor(c => c
+                                   .Body(b => b
+                                   .AddLines(@"var thing = ""MyString"";",    
+                                             @"var thung = thing;")));
 
         await BuildAndVerify(classBuilder);
     }
@@ -61,9 +71,7 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithProperty_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithProperty<string>("Name", p => p
-                                    .WithGetter()
-                                    .WithSetter());
+                               .Properties(p => p.Add<string>("Name").Get().Set());
 
         await BuildAndVerify(classBuilder);
     }
@@ -72,9 +80,9 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithVoidMethod_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithMethod("TestMethod", m => m
-                                    .WithBody(b => b
-                                        .AddStatement(@"Console.WriteLine(""Hello World!"")")));
+                               .AddMethod("TestMethod", m => m
+                                    .Body(b => b
+                                        .AddLine(@"Console.WriteLine(""Hello World!"")")));
 
         await BuildAndVerify(classBuilder);
     }
@@ -83,12 +91,12 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithTypedMethod_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .WithMethod("TestMethod", m => m
-                                    .WithBody(b => b
-                                        .AddStatement(@"Console.WriteLine(GetMessage());")))
-                               .WithMethod<string>("GetMessage", m => m
-                                    .WithBody(b => b
-                                        .AddStatement(@"return ""Hello World!"";")));
+                               .AddMethod("TestMethod", m => m
+                                    .Body(b => b
+                                        .AddLine(@"Console.WriteLine(GetMessage());")))
+                               .AddMethod<string>("GetMessage", m => m
+                                    .Body(b => b
+                                        .AddLine(@"return ""Hello World!"";")));
 
         await BuildAndVerify(classBuilder);
     }
@@ -97,22 +105,20 @@ public class VerifyClassBuilder
     public async Task Create_ComplexClass_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                                    .InheritsFrom<SomeClass>()
-                                    .ImplementsInterface<ISomeInterface>()
-                               .WithAttributes(a => a
-                                    .AddAttribute<JsonSerializableAttribute>("typeof(TestMethod)")
-                                    .AddAttribute<AnotherAttribute>())
-                               .WithProperty<string>("Message", p => p.WithGetter().WithSetter())
-                               .WithConstructor(c => c.Parameter<string>("defaultMessage")
-                                    .WithBody(b => b
-                                        .AddStatement("Message = defaultMessage;")))
-                               .WithMethod("TestMethod", m => m
-                                    .WithBody(b => b
-                                        .AddStatement(@"Console.WriteLine(Message);")))
-                               .WithMethod("SetMessage", m => m
-                                    .Parameter<string>("message")
-                                    .WithBody(b => b
-                                        .AddStatement(@"Message = message;")));
+                                   .Attributes(a => a
+                                       .Add<JsonSerializableAttribute>("typeof(TestMethod)")
+                                       .Add<AnotherAttribute>())
+                                   .Extends<SomeClass>().Implements<ISomeInterface>()                                   
+                                   .Properties(p => p
+                                       .AddPrivate<string>("Message").Get().Set())                               
+                                   .Constructor(c => c.Parameter<string>("defaultMessage")
+                                       .Body("Message = defaultMessage;"))
+                                   .AddMethod("TestMethod", m => m //TODO: Methods (like properties and attributes)
+                                       .Body(@"Console.WriteLine(Message);"))
+                                   .AddMethod("SetMessage", m => m
+                                       .Parameter<string>("message")
+                                       .Body(b => b
+                                       .AddLine(@"Message = message;")));
 
         await BuildAndVerify(classBuilder);
     }
@@ -120,8 +126,7 @@ public class VerifyClassBuilder
     private static async Task BuildAndVerify(ClassBuilder classBuilder)
     {
         var generatedClass = classBuilder.Build();
-
-        // Verify the generated class
+                
         await Verify(generatedClass.NormalizeWhitespace().ToFullString());
     }
 }

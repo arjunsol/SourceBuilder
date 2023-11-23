@@ -6,7 +6,7 @@ public class BlockBuilderTests
     public void TestAddStatement_AddsStatementCorrectly()
     {
         var blockBuilder = new BlockBuilder();
-        blockBuilder.AddStatement("int x = 1;");
+        blockBuilder.AddLine("int x = 1;");
 
         var block = blockBuilder.Build();
         var statement = block.Statements.First();
@@ -19,8 +19,8 @@ public class BlockBuilderTests
     public void TestAddMultipleStatements_AddsAllStatements()
     {
         var blockBuilder = new BlockBuilder();
-        blockBuilder.AddStatement("int x = 1;");
-        blockBuilder.AddStatement("int y = 2;");
+        blockBuilder.AddLine("int x = 1;");
+        blockBuilder.AddLine("int y = 2;");
 
         var block = blockBuilder.Build();
 
@@ -31,7 +31,7 @@ public class BlockBuilderTests
     public void TestBuild_BuildsBlockCorrectly()
     {
         var blockBuilder = new BlockBuilder();
-        blockBuilder.AddStatement("int x = 1;");
+        blockBuilder.AddLine("int x = 1;");
 
         var block = blockBuilder.Build();
 
