@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using G4ME.SourceBuilder.Types;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 
 namespace G4ME.SourceBuilder
@@ -16,7 +17,7 @@ namespace G4ME.SourceBuilder
 
         public Builder AddClass(string className, Action<ClassBuilder> configure)
         {
-            var classBuilder = new ClassBuilder(className, _namespace);
+            ClassBuilder classBuilder = new(className, _namespace);
             configure(classBuilder);
             _typeBuilders.Add(classBuilder);
             return this;
@@ -24,7 +25,7 @@ namespace G4ME.SourceBuilder
 
         public Builder AddInterface(string interfaceName, Action<InterfaceBuilder> configure)
         {
-            var interfaceBuilder = new InterfaceBuilder(interfaceName, _namespace);
+            InterfaceBuilder interfaceBuilder = new(interfaceName, _namespace);
             configure(interfaceBuilder);
             _typeBuilders.Add(interfaceBuilder);
             return this;
@@ -32,7 +33,7 @@ namespace G4ME.SourceBuilder
 
         public Builder AddRecord(string recordName, Action<RecordBuilder> configure)
         {
-            var recordBuilder = new RecordBuilder(recordName, _namespace);
+            RecordBuilder recordBuilder = new(recordName, _namespace);
             configure(recordBuilder);
             _typeBuilders.Add(recordBuilder);
             return this;
@@ -40,7 +41,7 @@ namespace G4ME.SourceBuilder
 
         private CompilationUnitSyntax BuildCompilationUnit()
         {
-            var compilationBuilder = new CompilationUnitBuilder([.. _typeBuilders]);
+            CompilationUnitBuilder compilationBuilder = new([.. _typeBuilders]);
             return compilationBuilder.Build();
         }
 

@@ -27,6 +27,11 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
 
     public RecordBuilder Implements<TInterface>() where TInterface : class
     {
+        if (!typeof(TInterface).IsInterface)
+        {
+            throw new ArgumentException("Generic type must be an interface.", nameof(TInterface));
+        }
+
         AddNamespace<TInterface>();
 
         var interfaceName = Syntax.TypeName.ValueOf<TInterface>();

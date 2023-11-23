@@ -1,0 +1,5 @@
+﻿public interface MyInterface
+{
+    void MethodOne();
+    string MethodTwo(string Thing);
+}

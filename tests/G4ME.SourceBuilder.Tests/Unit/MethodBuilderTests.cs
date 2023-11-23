@@ -98,16 +98,6 @@ public class MethodBuilderTests
     }
 
     [Fact]
-    public void TestEndMethodReturnsParentBuilder_ReturnsParentBuilder()
-    {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
-
-        var returnedBuilder = methodBuilder.EndMethod();
-
-        Assert.Equal(_mockClassBuilder, returnedBuilder);
-    }
-
-    [Fact]
     public void TestMethodProperties_AreSetCorrectly()
     {
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "int", "CalculateSum");

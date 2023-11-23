@@ -25,6 +25,13 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder Implements<TInterface>() where TInterface : class
     {
+        //TODO: Add to guard project
+        if (!typeof(TInterface).IsInterface)
+        {
+            throw new ArgumentException("Generic type must be an interface.", nameof(TInterface));
+        }
+
+
         AddNamespace<TInterface>();
 
         var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
@@ -57,15 +64,15 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder Constructor()
     {
-        var constrcutorBuilder = new ConstructorBuilder(this);
-        _classDeclaration = _classDeclaration.AddMembers(constrcutorBuilder.Build());
+        ConstructorBuilder constructorBuilder = new(this);
+        _classDeclaration = _classDeclaration.AddMembers(constructorBuilder.Build());
 
         return this;
     }
 
     public ClassBuilder Constructor(Action<ConstructorBuilder> constructorConfigurator)
     {
-        var constructorBuilder = new ConstructorBuilder(this);
+        ConstructorBuilder constructorBuilder = new(this);
         constructorConfigurator(constructorBuilder);
         _classDeclaration = _classDeclaration.AddMembers(constructorBuilder.Build());
 
@@ -88,7 +95,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
                 
         string returnType = Syntax.TypeName.ValueOf<T>();
 
-        var methodBuilder = new MethodBuilder(this, returnType, methodName);
+        MethodBuilder methodBuilder = new(this, returnType, methodName);
         methodConfigurator(methodBuilder);
         _classDeclaration = _classDeclaration.AddMembers(methodBuilder.Build());
 

@@ -1,31 +1,47 @@
-﻿namespace G4ME.SourceBuilder.Syntax;
+﻿namespace G4ME.SourceBuilder.Types;
 
-public class InterfaceBuilder(string name, string interfaceNamespace = "") : IInterfaceBuilder
+public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITypeBuilder
 {
     private readonly NamespaceCollection _requiredNamespaces = new(interfaceNamespace);
     private InterfaceDeclarationSyntax _interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(name)
-                                                                    .AddModifiers(SyntaxFactory.Token(
-                                                                        SyntaxKind.PublicKeyword));
+                                                               .AddModifiers(SyntaxFactory.Token(
+                                                                   SyntaxKind.PublicKeyword));
 
     public string TypeName { get; private set; } = name;
+    public string Namespace { get; private set; } = interfaceNamespace;
 
-    public string Namespace => interfaceNamespace;
-
-    public InterfaceBuilder InheritsFrom<TBase>() where TBase : class
+    public InterfaceBuilder Extends<TBase>() where TBase : class
     {
+        // TODO: Add to guard project
+        if (!typeof(TBase).IsInterface)
+        {
+            throw new ArgumentException("Generic type must be an interface.", nameof(TBase));
+        }
+
         AddNamespace<TBase>();
-
         var baseTypeName = typeof(TBase).Name;
-
         _interfaceDeclaration = _interfaceDeclaration.AddBaseListTypes(
                                     SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(baseTypeName)));
+        return this;
+    }
+
+    public InterfaceBuilder AddMethod(string methodName, Action<InterfaceMethodBuilder> methodConfigurator)
+    {
+        InterfaceMethodBuilder methodBuilder = new(this, methodName);
+
+        methodConfigurator(methodBuilder);
+        _interfaceDeclaration = _interfaceDeclaration.AddMembers(methodBuilder.Build());
 
         return this;
     }
 
-    public InterfaceBuilder WithMethod(string methodName, Action<MethodBuilder> methodConfigurator)
+    public InterfaceBuilder AddMethod<T>(string methodName, Action<InterfaceMethodBuilder> methodConfigurator)
     {
-        var methodBuilder = new MethodBuilder(this, methodName);
+        AddNamespace<T>();
+
+        var returnType = Syntax.TypeName.ValueOf<T>();
+
+        InterfaceMethodBuilder methodBuilder = new(this, returnType, methodName);
         methodConfigurator(methodBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(methodBuilder.Build());
 
@@ -34,7 +50,8 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
 
     public InterfaceBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
     {
-        var propertyBuilder = new PropertyBuilder();
+        PropertyBuilder propertyBuilder = new();
+
         propertyConfigurator(propertyBuilder);
         _interfaceDeclaration = _interfaceDeclaration.AddMembers(propertyBuilder.Build());
 
@@ -43,16 +60,15 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
 
     public InterfaceBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        var attributeBuilder = new AttributeBuilder();
+        AttributeBuilder attributeBuilder = new();
         attributeConfigurator(attributeBuilder);
         _interfaceDeclaration = _interfaceDeclaration.WithAttributeLists(attributeBuilder.Build());
-
         return this;
     }
 
-    public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
-
     public IEnumerable<string> GetRequiredNamespaces() => _requiredNamespaces.GetAll();
 
-    public TypeDeclarationSyntax Build() => _interfaceDeclaration;
+    public TypeDeclarationSyntax Build() => _interfaceDeclaration.NormalizeWhitespace();
+
+    public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
 }

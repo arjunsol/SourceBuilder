@@ -1,0 +1,4 @@
+﻿[Some()]
+public interface MyInterface
+{
+}

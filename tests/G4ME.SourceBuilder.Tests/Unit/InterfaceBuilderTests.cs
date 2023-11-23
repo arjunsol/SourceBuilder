@@ -1,4 +1,5 @@
 ﻿using G4ME.SourceBuilder.Tests.Objects;
+using G4ME.SourceBuilder.Types;
 
 namespace G4ME.SourceBuilder.Tests.Unit;
 
@@ -29,7 +30,7 @@ public class InterfaceBuilderTests
     public void InterfaceBuilder_AddsMethodCorrectly()
     {
         var builder = new InterfaceBuilder("IMyInterface");
-        builder.WithMethod("TestMethod", mb => mb.Parameter<int>("param1"));
+        builder.AddMethod("TestMethod", mb => mb.Parameter<int>("param1"));
 
         var interfaceDeclaration = builder.Build();
 
@@ -72,7 +73,7 @@ public class InterfaceBuilderTests
     public void InterfaceBuilder_InheritsFromBaseInterfaceCorrectly()
     {
         var builder = new InterfaceBuilder("IMyInterface");
-        builder.InheritsFrom<IBaseInterface>();
+        builder.Extends<IBaseInterface>();
 
         var interfaceDeclaration = builder.Build();
 

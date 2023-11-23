@@ -2,26 +2,23 @@
 
 public class MethodBuilder(ITypeBuilder parent, string returnType, string methodName)
 {
-    private readonly ITypeBuilder _parentBuilder = parent;
-    private readonly List<ParameterSyntax> _parameters = []; //TODO: Implement ParameterBuilder 
+    private readonly ParameterBuilder _parameterBuilder = new();
+
     private readonly BlockBuilder _bodyBuilder = new();
 
     private MethodDeclarationSyntax _methodDeclaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), methodName)
                                                             .AddModifiers(SyntaxFactory.Token(
                                                                 SyntaxKind.PublicKeyword));
-
     public MethodBuilder(ITypeBuilder parentBuilder, string methodName) : this(parentBuilder, "void", methodName)
     {
     }
 
     public MethodBuilder Parameter<T>(string parameterName)
     {
-        var parameterType = TypeName.ValueOf<T>();
-        var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameterName))
-            .WithType(SyntaxFactory.ParseTypeName(parameterType));
-        _parameters.Add(parameter);
-        _parentBuilder.AddNamespace<T>();
-        
+        _parameterBuilder.AddParameter<T>(parameterName);
+
+        parent.AddNamespace<T>();
+
         return this;
     }
 
@@ -42,7 +39,7 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
 
     public MethodBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        var attributeBuilder = new AttributeBuilder();
+        AttributeBuilder attributeBuilder = new();
         attributeConfigurator(attributeBuilder);
         _methodDeclaration = _methodDeclaration.WithAttributeLists(attributeBuilder.Build());
         return this;
@@ -51,11 +48,9 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
     public MethodDeclarationSyntax Build()
     {
         _methodDeclaration = _methodDeclaration
-            .WithParameterList(SyntaxFactory.ParameterList(SyntaxFactory.SeparatedList(_parameters)))
+            .WithParameterList(_parameterBuilder.Build())
             .WithBody(_bodyBuilder.Build());
         
         return _methodDeclaration;
     }
-
-    public ITypeBuilder EndMethod() => _parentBuilder;
 }

@@ -13,7 +13,7 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
 
         // Get the namespace from the first class (assuming all classes share the same namespace)
         var namespaceName = _classBuilders.First().Namespace;
-        var requiredNamespaces = new HashSet<string>();
+        HashSet<string> requiredNamespaces = new(); // TODO: Replace with namespace collection?
 
         // Aggregate required namespaces from all class builders
         foreach (var classBuilder in _classBuilders)

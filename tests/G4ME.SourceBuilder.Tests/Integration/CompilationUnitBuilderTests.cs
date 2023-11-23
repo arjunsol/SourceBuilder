@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using G4ME.SourceBuilder.Types;
 
 namespace G4ME.SourceBuilder.Tests.Integration;
 

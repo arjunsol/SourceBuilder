@@ -8,7 +8,7 @@
             var builder = new Builder()
                 .SetNamespace("MyNamespace")
                 .AddClass("MyClass", c => c.AddMethod("MyMethod", m => m.Parameter<int>("param")))
-                .AddInterface("IMyInterface", i => i.WithMethod("InterfaceMethod", m => { }));
+                .AddInterface("IMyInterface", i => i.AddMethod("InterfaceMethod", m => { }));
                 //.AddRecord("MyRecord", r => r.Properties(p => p.Add<string>("MyProperty")));
 
             var compilationUnit = builder.Build();
