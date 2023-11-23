@@ -3,7 +3,7 @@
 public class MethodBuilder(ITypeBuilder parent, string returnType, string methodName)
 {
     private readonly ITypeBuilder _parentBuilder = parent;
-    private readonly List<ParameterSyntax> _parameters = [];
+    private readonly List<ParameterSyntax> _parameters = []; //TODO: Implement ParameterBuilder 
     private readonly BlockBuilder _bodyBuilder = new();
 
     private MethodDeclarationSyntax _methodDeclaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), methodName)
@@ -32,7 +32,8 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
         return this;
     }
 
-    public MethodBuilder Body(params string[] statements)
+    //TODO: I'll need a way to parse any type in the statement text likely forcing them to use AddLine<T>
+    public MethodBuilder Body(params string[] statements) 
     {
         _bodyBuilder.AddLines(statements);
 

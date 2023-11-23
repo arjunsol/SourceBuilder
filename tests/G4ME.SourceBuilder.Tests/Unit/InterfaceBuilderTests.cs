@@ -11,7 +11,7 @@ public class InterfaceBuilderTests
         var interfaceNamespace = "TestNamespace";
         var interfaceBuilder = new InterfaceBuilder(interfaceName, interfaceNamespace);
 
-        Assert.Equal(interfaceName, interfaceBuilder.ClassName);
+        Assert.Equal(interfaceName, interfaceBuilder.TypeName);
         Assert.Equal(interfaceNamespace, interfaceBuilder.Namespace);
     }
 

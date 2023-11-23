@@ -8,7 +8,7 @@ namespace G4ME.SourceBuilder.Syntax
     public class PropertyBuilder
     {
         private const SyntaxKind DEFAULT_MODIFIER = SyntaxKind.PublicKeyword;
-        private readonly PropertyDeclarationCollection _properites = new PropertyDeclarationCollection();
+        private readonly PropertyDeclarationCollection _properites = new();
 
         public PropertyBuilder Add<T>(string propertyName) => Add<T>(propertyName, DEFAULT_MODIFIER);
 

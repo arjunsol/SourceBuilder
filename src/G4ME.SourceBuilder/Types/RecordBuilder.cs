@@ -1,15 +1,19 @@
-﻿namespace G4ME.SourceBuilder.Types;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
 public class RecordBuilder(string recordName, string recordNamespace = "") : ITypeBuilder
 {
     private readonly NamespaceCollection _requiredNamespaces = new(recordNamespace);
+    private readonly ParameterBuilder _parameterBuilder = new();
     private RecordDeclarationSyntax _recordDeclaration = SyntaxFactory.RecordDeclaration(SyntaxFactory.Token(SyntaxKind.RecordKeyword), recordName)
-                                                            .AddModifiers(SyntaxFactory.Token(
-                                                                SyntaxKind.PublicKeyword));
-    public string ClassName { get; private set; } = recordName;
-    public string Namespace { get; private set; } = recordNamespace;
+                                                                       .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                                                                       .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+    
+    public string TypeName { get; private set; } = recordName;
+    public string Namespace => recordNamespace;
 
-    public RecordBuilder InheritsFrom<TBase>() where TBase : class
+    public RecordBuilder(string name) : this(name, string.Empty) { }
+
+    public RecordBuilder Extends<TBase>() where TBase : class
     {
         AddNamespace<TBase>();
 
@@ -21,11 +25,11 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
         return this;
     }
 
-    public RecordBuilder ImplementsInterface<TInterface>() where TInterface : class
+    public RecordBuilder Implements<TInterface>() where TInterface : class
     {
         AddNamespace<TInterface>();
 
-        var interfaceName = typeof(TInterface).Name;
+        var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
         _recordDeclaration = _recordDeclaration.AddBaseListTypes(
                                 SyntaxFactory.SimpleBaseType(
                                     SyntaxFactory.ParseTypeName(interfaceName)));
@@ -33,49 +37,71 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
         return this;
     }
 
-    public RecordBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
+    public RecordBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        var propertyBuilder = new PropertyBuilder();
-        propertyConfigurator(propertyBuilder);
-        _recordDeclaration = _recordDeclaration.AddMembers(propertyBuilder.Build());
+        AttributeBuilder attributeBuilder = new();
 
-        return this;
-    }
-
-    public RecordBuilder WithMethod(string methodName, Action<MethodBuilder> methodConfigurator)
-    {
-        var methodBuilder = new MethodBuilder(this, methodName);
-        methodConfigurator(methodBuilder);
-        _recordDeclaration = _recordDeclaration.AddMembers(methodBuilder.Build());
-
-        return this;
-    }
-
-    public RecordBuilder WithMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
-    {
-        AddNamespace<T>();
-
-        string returnType = TypeName.ValueOf<T>();
-
-        var methodBuilder = new MethodBuilder(this, returnType, methodName);
-        methodConfigurator(methodBuilder);
-        _recordDeclaration = _recordDeclaration.AddMembers(methodBuilder.Build());
-
-        return this;
-    }
-
-    public RecordBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
-    {
-        var attributeBuilder = new AttributeBuilder();
         attributeConfigurator(attributeBuilder);
         _recordDeclaration = _recordDeclaration.WithAttributeLists(attributeBuilder.Build());
 
         return this;
     }
 
+    // TODO: All TypeBuilder should follow a configurable ruleset on naming standards
+    public RecordBuilder Parameter<T>(string parameterName)
+    {
+        _parameterBuilder.AddParameter<T>(parameterName);
+
+        AddNamespace<T>();
+
+        return this;
+    }
+
+    //TODO: Find a way to support properties
+    //public RecordBuilder Properties(Action<PropertyBuilder> propertyConfigurator)
+    //{
+    //    PropertyBuilder propertyBuilder = new();
+        
+    //    propertyConfigurator(propertyBuilder);
+    //    _recordDeclaration = _recordDeclaration.AddMembers(propertyBuilder.Build());
+
+    //    return this;
+    //}
+
+    //TODO: Find a way to support methods
+    //public RecordBuilder AddMethod(string methodName, Action<MethodBuilder> methodConfigurator)
+    //{
+    //    MethodBuilder methodBuilder = new(this, methodName);
+        
+    //    methodConfigurator(methodBuilder);
+    //    _recordDeclaration = _recordDeclaration.AddMembers(methodBuilder.Build());
+
+    //    return this;
+    //}
+
+    //public RecordBuilder AddMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
+    //{
+    //    AddNamespace<T>();
+
+    //    string returnType = Syntax.TypeName.ValueOf<T>();
+
+    //    var methodBuilder = new MethodBuilder(this, returnType, methodName);
+    //    methodConfigurator(methodBuilder);
+    //    _recordDeclaration = _recordDeclaration.AddMembers(methodBuilder.Build());
+
+    //    return this;
+    //}
+
     public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
 
     public IEnumerable<string> GetRequiredNamespaces() => _requiredNamespaces.GetAll();
 
-    public TypeDeclarationSyntax Build() => _recordDeclaration;
+    public TypeDeclarationSyntax Build()
+    {
+        _recordDeclaration = _recordDeclaration
+                             .WithParameterList(_parameterBuilder.Build());
+
+        return _recordDeclaration;
+    }
+
 }

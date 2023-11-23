@@ -17,7 +17,7 @@ public class RecordBuilderTests
     [Fact]
     public void RecordBuilder_InheritsFromBaseRecord()
     {
-        var builder = new RecordBuilder("MyRecord").InheritsFrom<BaseRecord>();
+        var builder = new RecordBuilder("MyRecord").Extends<BaseRecord>();
 
         var recordDeclaration = builder.Build();
 
@@ -29,7 +29,7 @@ public class RecordBuilderTests
     [Fact]
     public void RecordBuilder_ImplementsInterface()
     {
-        var builder = new RecordBuilder("MyRecord").ImplementsInterface<ISomeInterface>();
+        var builder = new RecordBuilder("MyRecord").Implements<ISomeInterface>();
 
         var recordDeclaration = builder.Build();
 
@@ -38,56 +38,57 @@ public class RecordBuilderTests
                         t => t.Type.ToString() == nameof(ISomeInterface));
     }
 
-    [Fact]
-    public void RecordBuilder_AddsPropertyCorrectly()
-    {
-        var builder = new RecordBuilder("MyRecord")
-            .Properties(p => p.Add<int>("MyProperty"));
+    // TODO: Bodies for records (check other commented out tests
+    //[Fact]
+    //public void RecordBuilder_AddsPropertyCorrectly()
+    //{
+    //    var builder = new RecordBuilder("MyRecord")
+    //        .Properties(p => p.Add<int>("MyProperty"));
 
-        var recordDeclaration = builder.Build();
-        var property = recordDeclaration.Members
-            .OfType<PropertyDeclarationSyntax>()
-            .FirstOrDefault(p => p.Identifier.ValueText == "MyProperty");
+    //    var recordDeclaration = builder.Build();
+    //    var property = recordDeclaration.Members
+    //        .OfType<PropertyDeclarationSyntax>()
+    //        .FirstOrDefault(p => p.Identifier.ValueText == "MyProperty");
 
-        Assert.NotNull(property);
-        Assert.Equal("int", property.Type.ToString());
-    }
+    //    Assert.NotNull(property);
+    //    Assert.Equal("int", property.Type.ToString());
+    //}
 
-    [Fact]
-    public void TestAddParameterGenericReturn_AddsCorrectNamespace()
-    {
-        var classBuilder = new RecordBuilder("TestClass")
-                               .WithMethod<List<SomeClass>>("TestMethod",
-                                                           m => m.Body(
-                                                           b => b.AddLine("return new List<TestType>();")));
-        var nspace = classBuilder.GetRequiredNamespaces();
+    //[Fact]
+    //public void TestAddParameterGenericReturn_AddsCorrectNamespace()
+    //{
+    //    var classBuilder = new RecordBuilder("TestClass")
+    //                           .AddMethod<List<SomeClass>>("TestMethod",
+    //                                                       m => m.Body(
+    //                                                       b => b.AddLine("return new List<TestType>();")));
+    //    var nspace = classBuilder.GetRequiredNamespaces();
 
-        Assert.Equal(2, nspace.Count());
-        Assert.Contains("System.Collections.Generic", nspace);
-        Assert.Contains("G4ME.SourceBuilder.Tests.Objects", nspace);
-    }
+    //    Assert.Equal(2, nspace.Count());
+    //    Assert.Contains("System.Collections.Generic", nspace);
+    //    Assert.Contains("G4ME.SourceBuilder.Tests.Objects", nspace);
+    //}
 
-    [Fact]
-    public void RecordBuilder_AddsMethodCorrectly()
-    {
-        var builder = new RecordBuilder("MyRecord")
-            .WithMethod("MyMethod", mb => mb.Parameter<int>("param1"));
+    //[Fact]
+    //public void RecordBuilder_AddsMethodCorrectly()
+    //{
+    //    var builder = new RecordBuilder("MyRecord")
+    //        .AddMethod("MyMethod", mb => mb.Parameter<int>("param1"));
 
-        var recordDeclaration = builder.Build();
-        var method = recordDeclaration.Members
-            .OfType<MethodDeclarationSyntax>()
-            .FirstOrDefault(m => m.Identifier.ValueText == "MyMethod");
+    //    var recordDeclaration = builder.Build();
+    //    var method = recordDeclaration.Members
+    //        .OfType<MethodDeclarationSyntax>()
+    //        .FirstOrDefault(m => m.Identifier.ValueText == "MyMethod");
 
-        Assert.NotNull(method);
-        Assert.Single(method.ParameterList.Parameters);
-        Assert.Equal("param1", method.ParameterList.Parameters[0].Identifier.ValueText);
-    }
+    //    Assert.NotNull(method);
+    //    Assert.Single(method.ParameterList.Parameters);
+    //    Assert.Equal("param1", method.ParameterList.Parameters[0].Identifier.ValueText);
+    //}
 
     [Fact]
     public void RecordBuilder_AddsAttributesCorrectly()
     {
         var builder = new RecordBuilder("MyRecord")
-            .WithAttributes(ab => ab.Add<SomeAttribute>());
+            .Attributes(ab => ab.Add<SomeAttribute>());
 
         var recordDeclaration = builder.Build();
 

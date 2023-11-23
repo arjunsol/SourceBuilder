@@ -1,10 +1,10 @@
-﻿namespace G4ME.SourceBuilder.Types;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
 public interface ITypeBuilder
 
 {
     string Namespace { get; }
-    string ClassName { get; }
+    string TypeName { get; }
 
     IEnumerable<string> GetRequiredNamespaces();
     TypeDeclarationSyntax Build();

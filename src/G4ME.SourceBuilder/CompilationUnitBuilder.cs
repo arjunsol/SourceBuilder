@@ -40,7 +40,7 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
             var regionTriviaEnd = SyntaxFactory.Trivia(SyntaxFactory.EndRegionDirectiveTrivia(true));
 
             var leadingTrivia = SyntaxFactory.TriviaList(regionTriviaStart)
-                                    .Add(SyntaxFactory.Comment($"#region {classBuilder.ClassName}"));
+                                    .Add(SyntaxFactory.Comment($"#region {classBuilder.TypeName}"));
             
             var trailingTrivia = SyntaxFactory.TriviaList(regionTriviaEnd);
 

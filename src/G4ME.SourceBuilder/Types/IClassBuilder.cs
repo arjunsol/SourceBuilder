@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder.Types;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
 public interface IClassBuilder : ITypeBuilder
 {

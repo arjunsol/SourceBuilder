@@ -29,7 +29,7 @@ public class VerifyClassBuilder
     public async Task Create_ClassWithDefaultConstrcutor_Verified()
     {
         var classBuilder = new ClassBuilder("TestClass")
-                               .AddConstructor();
+                               .Constructor();
 
         await BuildAndVerify(classBuilder);
     }
@@ -125,7 +125,7 @@ public class VerifyClassBuilder
 
     private static async Task BuildAndVerify(ClassBuilder classBuilder)
     {
-        var generatedClass = classBuilder.Build();
+        TypeDeclarationSyntax generatedClass = classBuilder.Build();
                 
         await Verify(generatedClass.NormalizeWhitespace().ToFullString());
     }

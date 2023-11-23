@@ -10,7 +10,7 @@ public class ClassBuilderTests
         var className = "TestClassName";
         var classBuilder = new ClassBuilder(className);
 
-        Assert.Equal(className, classBuilder.ClassName);
+        Assert.Equal(className, classBuilder.TypeName);
         Assert.Empty(classBuilder.Namespace);
     }
 
@@ -21,7 +21,7 @@ public class ClassBuilderTests
         var classNamespace = "TestNamespace";
         var classBuilder = new ClassBuilder(className, classNamespace);
 
-        Assert.Equal(className, classBuilder.ClassName);
+        Assert.Equal(className, classBuilder.TypeName);
         Assert.Equal(classNamespace, classBuilder.Namespace);
     }
 

@@ -1,4 +1,4 @@
-﻿namespace G4ME.SourceBuilder.Types;
+﻿namespace G4ME.SourceBuilder.Syntax;
 
 public class InterfaceBuilder(string name, string interfaceNamespace = "") : IInterfaceBuilder
 {
@@ -7,7 +7,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : IIn
                                                                     .AddModifiers(SyntaxFactory.Token(
                                                                         SyntaxKind.PublicKeyword));
 
-    public string ClassName { get; private set; } = name;
+    public string TypeName { get; private set; } = name;
 
     public string Namespace => interfaceNamespace;
 
