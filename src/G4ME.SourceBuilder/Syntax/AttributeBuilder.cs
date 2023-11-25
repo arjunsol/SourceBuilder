@@ -1,11 +1,13 @@
 ﻿namespace G4ME.SourceBuilder.Syntax;
 
-public class AttributeBuilder
+public class AttributeBuilder(ITypeBuilder parent)
 {
     private readonly List<AttributeSyntax> _attributes = [];
 
     public AttributeBuilder Add<TAttribute>(params string[] arguments) where TAttribute : Attribute
     {
+        parent.AddNamespace<TAttribute>();
+
         var attributeName = typeof(TAttribute).Name;
         
         if (attributeName.EndsWith("Attribute"))

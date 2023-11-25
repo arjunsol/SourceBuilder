@@ -1,4 +1,5 @@
 ﻿using G4ME.SourceBuilder.Tests.Objects;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace G4ME.SourceBuilder.Tests.Unit;
 
@@ -74,5 +75,38 @@ public class ConstructorBuilderTests
         // TODO: Add body checks
         Assert.NotNull(constructor.ParameterList);
         Assert.NotNull(constructor.Body);
+    }
+
+    [Fact]
+    public void ConstructorWithBaseCall_ShouldMapAllParameters()
+    {
+        var builder = new ConstructorBuilder(new ClassBuilder("MyClass"))
+            .Parameter<int>("param1")
+            .MapBase()
+            .Body("int x = 1;");
+
+        var constructorSyntax = builder.Build();
+
+        Assert.NotNull(constructorSyntax.Initializer);
+        Assert.Equal(SyntaxKind.BaseConstructorInitializer, constructorSyntax.Initializer.Kind());
+        Assert.Single(constructorSyntax.Initializer.ArgumentList.Arguments);
+        Assert.Equal("param1", constructorSyntax.Initializer.ArgumentList.Arguments.First().Expression.ToString());
+    }
+
+    [Fact]
+    public void ConstructorWithBaseCallSpecificParams_ShouldMapSelectedParameters()
+    {
+        var builder = new ConstructorBuilder(new ClassBuilder("MyClass"))
+            .Parameter<int>("param1")
+            .Parameter<string>("param2")
+            .MapBase("param1")
+            .Body("int x = 1;");
+
+        var constructorSyntax = builder.Build();
+
+        Assert.NotNull(constructorSyntax.Initializer);
+        Assert.Equal(SyntaxKind.BaseConstructorInitializer, constructorSyntax.Initializer.Kind());
+        Assert.Single(constructorSyntax.Initializer.ArgumentList.Arguments);
+        Assert.Equal("param1", constructorSyntax.Initializer.ArgumentList.Arguments.First().Expression.ToString());
     }
 }

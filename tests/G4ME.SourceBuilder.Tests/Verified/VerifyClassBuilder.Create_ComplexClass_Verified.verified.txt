@@ -2,11 +2,11 @@
 [Another()]
 public class TestClass : SomeClass, ISomeInterface
 {
-    private string Message { get; set; }
+    private string Name { get; set; }
 
-    public TestClass(string defaultMessage)
+    public TestClass(int id, string name) : base(id, name)
     {
-        Message = defaultMessage;
+        Name = name;
     }
 
     public void TestMethod()

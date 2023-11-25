@@ -25,37 +25,53 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
         var usingDirectives = requiredNamespaces.Select(ns => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)))
                                                .ToArray();
 
-        // Create the namespace and add class declarations
-        var namespaceDeclaration = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(namespaceName))
-                                                .WithUsings(SyntaxFactory.List(usingDirectives));
+        // Create the namespace and add class declarations //namespaceName
+        FileScopedNamespaceDeclarationSyntax fileScopedNamespace = new NamespaceBuilder()
+                                                                       .FileScoped(namespaceName);
 
         foreach (var classBuilder in _classBuilders)
         {
-            var classDeclaration = classBuilder.Build();
-
-            // Creating a region around each class
-            var regionTriviaStart = SyntaxFactory.Trivia(SyntaxFactory.RegionDirectiveTrivia(true)
-                                        .WithEndOfDirectiveToken(SyntaxFactory.Token(SyntaxKind.EndOfDirectiveToken)));
+            TypeDeclarationSyntax classDeclaration = classBuilder.Build();
             
-            var regionTriviaEnd = SyntaxFactory.Trivia(SyntaxFactory.EndRegionDirectiveTrivia(true));
+            if(_classBuilders.Count() > 1)
+                classDeclaration = AddRegionDirectives(classBuilder, classDeclaration);
 
-            var leadingTrivia = SyntaxFactory.TriviaList(regionTriviaStart)
-                                    .Add(SyntaxFactory.Comment($"#region {classBuilder.TypeName}"));
-            
-            var trailingTrivia = SyntaxFactory.TriviaList(regionTriviaEnd);
-
-            classDeclaration = classDeclaration
-                .WithLeadingTrivia(leadingTrivia)
-                .WithTrailingTrivia(trailingTrivia);
-
-            namespaceDeclaration = namespaceDeclaration.AddMembers(classDeclaration);
+            // Add class declaration to the namespace declaration
+            fileScopedNamespace = fileScopedNamespace.AddMembers(classDeclaration);
         }
 
         // Create the compilation unit and add the namespace declaration
         var compilationUnit = SyntaxFactory.CompilationUnit()
-                                            .AddMembers(namespaceDeclaration)
-                                            .NormalizeWhitespace();
+                                           .WithUsings(SyntaxFactory.List(usingDirectives))
+                                           .AddMembers(fileScopedNamespace)
+                                           .NormalizeWhitespace();
 
         return compilationUnit;
+    }
+
+    private static TypeDeclarationSyntax AddRegionDirectives(ITypeBuilder classBuilder, TypeDeclarationSyntax classDeclaration)
+    {
+        // Create #region directive
+        var regionDirectiveStart = SyntaxFactory.Trivia(
+            SyntaxFactory.RegionDirectiveTrivia(true)
+            .WithEndOfDirectiveToken(
+                SyntaxFactory.Token(SyntaxTriviaList.Create(SyntaxFactory.PreprocessingMessage($" {classBuilder.TypeName}")),
+                SyntaxKind.EndOfDirectiveToken,
+                SyntaxTriviaList.Create(SyntaxFactory.CarriageReturnLineFeed))));
+
+        // Add region start trivia to the class declaration
+        classDeclaration = classDeclaration.WithLeadingTrivia(regionDirectiveStart);
+
+        // Create #endregion directive
+        var regionDirectiveEnd = SyntaxFactory.Trivia(
+            SyntaxFactory.EndRegionDirectiveTrivia(true)
+            .WithEndOfDirectiveToken(
+                SyntaxFactory.Token(SyntaxKind.EndOfDirectiveToken)
+                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed)));
+
+        // Add region end trivia to the class declaration
+        classDeclaration = classDeclaration.WithTrailingTrivia(regionDirectiveEnd);
+
+        return classDeclaration;
     }
 }

@@ -3,6 +3,7 @@ using G4ME.SourceBuilder.Types;
 
 namespace G4ME.SourceBuilder.Tests.Integration;
 
+// TODO: Check that using statments have been added.
 public class CompilationUnitBuilderTests
 {
     [Fact]
@@ -96,7 +97,7 @@ public class CompilationUnitBuilderTests
         // Act
         var compilationUnit = compilationUnitBuilder.Build();
         var declaredNamespace = compilationUnit.DescendantNodes()
-                                               .OfType<NamespaceDeclarationSyntax>()
+                                               .OfType<FileScopedNamespaceDeclarationSyntax>()
                                                .FirstOrDefault();
 
         // Assert

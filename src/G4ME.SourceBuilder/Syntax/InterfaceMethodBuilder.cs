@@ -21,7 +21,7 @@ public class InterfaceMethodBuilder(ITypeBuilder parent, string returnType, stri
 
     public InterfaceMethodBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        AttributeBuilder attributeBuilder = new();
+        AttributeBuilder attributeBuilder = new(parent);
 
         attributeConfigurator(attributeBuilder);
         _methodDeclaration = _methodDeclaration.WithAttributeLists(attributeBuilder.Build());

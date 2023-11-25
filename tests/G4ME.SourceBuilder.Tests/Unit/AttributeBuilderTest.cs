@@ -7,7 +7,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestAddAttribute_AddsAttributeCorrectly()
     {
-        var attributeBuilder = new AttributeBuilder();
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
+
         attributeBuilder.Add<SomeAttribute>("arg1", "arg2");
 
         var attributeList = attributeBuilder.Build();
@@ -23,7 +25,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestAddAttributeWithNoArguments_AddsAttributeWithoutArguments()
     {
-        var attributeBuilder = new AttributeBuilder();
+        // TODO: Use MOQ for the typebuilders
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
         attributeBuilder.Add<SomeAttribute>();
 
         var attributeList = attributeBuilder.Build();
@@ -37,7 +41,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestAddMultipleAttributes_AddsAllAttributes()
     {
-        var attributeBuilder = new AttributeBuilder();
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
+
         attributeBuilder.Add<SomeAttribute>("arg1");
         attributeBuilder.Add<AnotherAttribute>("arg2", "arg3");
 
@@ -54,7 +60,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestAddAttributeRemovesAttributeSuffix_RemovesSuffixCorrectly()
     {
-        var attributeBuilder = new AttributeBuilder();
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
+
         attributeBuilder.Add<SomeAttribute>();
 
         var attributeList = attributeBuilder.Build();
@@ -66,7 +74,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestBuildWithAttributes_BuildsCorrectly()
     {
-        var attributeBuilder = new AttributeBuilder();
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
+
         attributeBuilder.Add<SomeAttribute>("arg");
 
         var attributeList = attributeBuilder.Build();
@@ -77,7 +87,9 @@ public class AttributeBuilderTests
     [Fact]
     public void TestBuildWithoutAttributes_ReturnsEmptyList()
     {
-        var attributeBuilder = new AttributeBuilder();
+        ClassBuilder classBuilder = new("MyClass");
+        AttributeBuilder attributeBuilder = new(classBuilder);
+
         var attributeList = attributeBuilder.Build();
 
         Assert.Empty(attributeList);

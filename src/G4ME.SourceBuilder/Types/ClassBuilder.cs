@@ -44,7 +44,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        AttributeBuilder attributeBuilder = new();
+        AttributeBuilder attributeBuilder = new(this);
 
         attributeConfigurator(attributeBuilder);
         _classDeclaration = _classDeclaration.WithAttributeLists(attributeBuilder.Build());

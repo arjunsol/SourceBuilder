@@ -7,10 +7,11 @@ public class ParameterBuilder
     public ParameterBuilder AddParameter<T>(string parameterName)
     {
         var parameterType = TypeName.ValueOf<T>();
+
         var parameter = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameterName))
             .WithType(SyntaxFactory.ParseTypeName(parameterType));
-
         _parameters.Add(parameter);
+
         return this;
     }
 

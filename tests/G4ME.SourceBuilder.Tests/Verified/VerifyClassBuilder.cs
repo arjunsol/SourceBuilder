@@ -110,9 +110,11 @@ public class VerifyClassBuilder
                                        .Add<AnotherAttribute>())
                                    .Extends<SomeClass>().Implements<ISomeInterface>()
                                    .Properties(p => p
-                                       .AddPrivate<string>("Message").Get().Set())
-                                   .Constructor(c => c.Parameter<string>("defaultMessage")
-                                       .Body("Message = defaultMessage;"))
+                                       .AddPrivate<string>("Name").Get().Set())
+                                   .Constructor(c => c
+                                       .Parameter<int>("id")
+                                       .Parameter<string>("name").MapBase()
+                                       .Body("Name = name;"))
                                    .AddMethod("TestMethod", m => m //TODO: Methods (like properties and attributes)
                                        .Body(@"Console.WriteLine(Message);"))
                                    .AddMethod("SetMessage", m => m

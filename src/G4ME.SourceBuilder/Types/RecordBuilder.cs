@@ -44,7 +44,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
 
     public RecordBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        AttributeBuilder attributeBuilder = new();
+        AttributeBuilder attributeBuilder = new(this);
 
         attributeConfigurator(attributeBuilder);
         _recordDeclaration = _recordDeclaration.WithAttributeLists(attributeBuilder.Build());

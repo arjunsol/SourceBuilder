@@ -60,7 +60,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITy
 
     public InterfaceBuilder WithAttributes(Action<AttributeBuilder> attributeConfigurator)
     {
-        AttributeBuilder attributeBuilder = new();
+        AttributeBuilder attributeBuilder = new(this);
         attributeConfigurator(attributeBuilder);
         _interfaceDeclaration = _interfaceDeclaration.WithAttributeLists(attributeBuilder.Build());
         return this;
