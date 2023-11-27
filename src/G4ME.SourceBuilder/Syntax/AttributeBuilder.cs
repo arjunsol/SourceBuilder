@@ -6,8 +6,8 @@ public class AttributeBuilder(ITypeBuilder parent)
 
     public AttributeBuilder Add<TAttribute>(params string[] arguments) where TAttribute : Attribute
     {
-        parent.AddNamespace<TAttribute>();
-
+        parent.AddRequirement<TAttribute>();
+        
         var attributeName = typeof(TAttribute).Name;
         
         if (attributeName.EndsWith("Attribute"))

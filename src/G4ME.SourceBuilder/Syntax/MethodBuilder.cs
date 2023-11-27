@@ -17,7 +17,7 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
     {
         _parameterBuilder.AddParameter<T>(parameterName);
 
-        parent.AddNamespace<T>();
+        parent.AddRequirement<T>();
 
         return this;
     }

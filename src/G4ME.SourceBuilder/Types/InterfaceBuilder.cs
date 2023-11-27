@@ -1,8 +1,10 @@
-﻿namespace G4ME.SourceBuilder.Types;
+﻿using G4ME.SourceBuilder.Compile;
+
+namespace G4ME.SourceBuilder.Types;
 
 public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITypeBuilder
 {
-    private readonly NamespaceCollection _requiredNamespaces = new(interfaceNamespace);
+    private readonly Requirements _requirements = new(interfaceNamespace);
     private InterfaceDeclarationSyntax _interfaceDeclaration = SyntaxFactory.InterfaceDeclaration(name)
                                                                .AddModifiers(SyntaxFactory.Token(
                                                                    SyntaxKind.PublicKeyword));
@@ -18,7 +20,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITy
             throw new ArgumentException("Generic type must be an interface.", nameof(TBase));
         }
 
-        AddNamespace<TBase>();
+        AddRequirement<TBase>();
         var baseTypeName = typeof(TBase).Name;
         _interfaceDeclaration = _interfaceDeclaration.AddBaseListTypes(
                                     SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(baseTypeName)));
@@ -37,7 +39,7 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITy
 
     public InterfaceBuilder AddMethod<T>(string methodName, Action<InterfaceMethodBuilder> methodConfigurator)
     {
-        AddNamespace<T>();
+        AddRequirement<T>();
 
         var returnType = Syntax.TypeName.ValueOf<T>();
 
@@ -66,9 +68,10 @@ public class InterfaceBuilder(string name, string interfaceNamespace = "") : ITy
         return this;
     }
 
-    public IEnumerable<string> GetRequiredNamespaces() => _requiredNamespaces.GetAll();
-
+    
     public TypeDeclarationSyntax Build() => _interfaceDeclaration.NormalizeWhitespace();
 
-    public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
+    public void AddRequirement<T>() => _requirements.Add<T>();
+
+    public Requirements GetRequirements() => _requirements;
 }

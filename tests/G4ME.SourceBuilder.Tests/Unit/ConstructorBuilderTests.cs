@@ -49,7 +49,7 @@ public class ConstructorBuilderTests
         var constructorBuilder = new ConstructorBuilder(classBuilder);
         constructorBuilder.Parameter<SomeClass>("param1");
 
-        Assert.Contains(typeof(SomeClass).Namespace, classBuilder.GetRequiredNamespaces());
+        Assert.Contains(typeof(SomeClass).Namespace, classBuilder.GetRequirements().Namespaces);
     }
 
     [Fact]

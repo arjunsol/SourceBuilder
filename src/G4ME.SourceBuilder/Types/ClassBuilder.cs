@@ -1,8 +1,10 @@
-﻿namespace G4ME.SourceBuilder.Syntax;
+﻿using G4ME.SourceBuilder.Compile;
+
+namespace G4ME.SourceBuilder.Syntax;
 
 public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 {
-    private readonly NamespaceCollection _requiredNamespaces = new(classNamespace);
+    private readonly Requirements _requirements = new(classNamespace);
     private ClassDeclarationSyntax _classDeclaration = SyntaxFactory.ClassDeclaration(name)
                                                                     .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword));
     
@@ -13,7 +15,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder Extends<TBase>() where TBase : class
     {
-        AddNamespace<TBase>();
+        AddRequirement<TBase>();
 
         var baseTypeName = Syntax.TypeName.ValueOf<TBase>();
         _classDeclaration = _classDeclaration.AddBaseListTypes(
@@ -32,7 +34,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         }
 
 
-        AddNamespace<TInterface>();
+        AddRequirement<TInterface>();
 
         var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
         _classDeclaration = _classDeclaration.AddBaseListTypes(
@@ -91,7 +93,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder AddMethod<T>(string methodName, Action<MethodBuilder> methodConfigurator)
     {
-        AddNamespace<T>();
+        AddRequirement<T>();
                 
         string returnType = Syntax.TypeName.ValueOf<T>();
 
@@ -102,7 +104,7 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
         return this;
     }
 
-    public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
+    public void AddRequirement<T>() => _requirements.Add<T>();
 
     //public ClassBuilder WithIndexer(IndexerDeclarationSyntax indexerDeclaration)
     //{
@@ -110,7 +112,8 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
     //    return this;
     //}
 
-    public IEnumerable<string> GetRequiredNamespaces() => _requiredNamespaces.GetAll();
-
+    
     public TypeDeclarationSyntax Build() => _classDeclaration;
+
+    public Requirements GetRequirements() => _requirements;
 }

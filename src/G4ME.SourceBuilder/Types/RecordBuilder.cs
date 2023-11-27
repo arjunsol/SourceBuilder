@@ -1,9 +1,13 @@
-﻿namespace G4ME.SourceBuilder.Syntax;
+﻿
+using G4ME.SourceBuilder.Compile;
+
+namespace G4ME.SourceBuilder.Syntax;
 
 public class RecordBuilder(string recordName, string recordNamespace = "") : ITypeBuilder
 {
-    private readonly NamespaceCollection _requiredNamespaces = new(recordNamespace);
+    private readonly Requirements _requirements = new(recordNamespace);
     private readonly ParameterBuilder _parameterBuilder = new();
+
     private RecordDeclarationSyntax _recordDeclaration = SyntaxFactory.RecordDeclaration(SyntaxFactory.Token(SyntaxKind.RecordKeyword), recordName)
                                                                        .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
                                                                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
@@ -15,7 +19,13 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
 
     public RecordBuilder Extends<TBase>() where TBase : class
     {
-        AddNamespace<TBase>();
+        // TODO: Add to guard project (reliable record detection)
+        //if (!typeof(TBase).IsValueType) 
+        //{ 
+        //    throw new ArgumentException("Generic type must be a record.", nameof(TBase));
+        //}
+        
+        AddRequirement<TBase>();
 
         var baseTypeName = typeof(TBase).Name;
         _recordDeclaration = _recordDeclaration.AddBaseListTypes(
@@ -32,7 +42,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
             throw new ArgumentException("Generic type must be an interface.", nameof(TInterface));
         }
 
-        AddNamespace<TInterface>();
+        AddRequirement<TInterface>();
 
         var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
         _recordDeclaration = _recordDeclaration.AddBaseListTypes(
@@ -57,7 +67,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
     {
         _parameterBuilder.AddParameter<T>(parameterName);
 
-        AddNamespace<T>();
+        AddRequirement<T>();
 
         return this;
     }
@@ -97,9 +107,7 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
     //    return this;
     //}
 
-    public void AddNamespace<T>() => _requiredNamespaces.Add<T>();
-
-    public IEnumerable<string> GetRequiredNamespaces() => _requiredNamespaces.GetAll();
+    public void AddRequirement<T>() => _requirements.Add<T>();
 
     public TypeDeclarationSyntax Build()
     {
@@ -109,4 +117,5 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
         return _recordDeclaration;
     }
 
+    public Requirements GetRequirements() => _requirements;
 }

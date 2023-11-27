@@ -57,7 +57,7 @@ public class MethodBuilderTests
         var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
         methodBuilder.Parameter<SomeClass>("param1");
 
-        _mockClassBuilder.Received(1).AddNamespace<SomeClass>();
+        _mockClassBuilder.Received(1).AddRequirement<SomeClass>();
     }
 
     [Fact]

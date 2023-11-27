@@ -13,7 +13,7 @@ public class ConstructorBuilder(ClassBuilder parent)
     public ConstructorBuilder Parameter<T>(string parameterName)
     {
         _parameterBuilder.AddParameter<T>(parameterName);
-        parent.AddNamespace<T>();
+        parent.AddRequirement<T>();
         
         return this;
     }

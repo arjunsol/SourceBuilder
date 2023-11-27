@@ -19,7 +19,7 @@ public class VerifyCompilationBuilder
         await BuildAndVerify(compilationUnitBuilder);
     }
 
-    [Fact] // TODO: Usings at top level, file scoped namespace
+    [Fact]
     public async Task Compilation_ComplexClass_NoErrors()
     {
         const string CLASSNAME = "MyClass";

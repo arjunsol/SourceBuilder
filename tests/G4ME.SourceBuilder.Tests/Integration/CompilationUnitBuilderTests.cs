@@ -3,7 +3,6 @@ using G4ME.SourceBuilder.Types;
 
 namespace G4ME.SourceBuilder.Tests.Integration;
 
-// TODO: Check that using statments have been added.
 public class CompilationUnitBuilderTests
 {
     [Fact]
@@ -111,7 +110,7 @@ public class CompilationUnitBuilderTests
         // Arrange
         var classBuilder = new ClassBuilder("TestClass", "TestNamespace");
 
-        classBuilder.AddNamespace<StringBuilder>();
+        classBuilder.AddRequirement<StringBuilder>();
         var compilationUnitBuilder = new CompilationUnitBuilder(classBuilder);
 
         // Act

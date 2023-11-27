@@ -32,7 +32,8 @@ public class ClassBuilderTests
                                .AddMethod<List<SomeClass>>("TestMethod",
                                                            m => m.Body(
                                                            b => b.AddLine("return new List<TestType>();")));
-        var nspace = classBuilder.GetRequiredNamespaces();
+        
+        var nspace = classBuilder.GetRequirements().Namespaces;
 
         Assert.Equal(2, nspace.Count());
         Assert.Contains("System.Collections.Generic", nspace);

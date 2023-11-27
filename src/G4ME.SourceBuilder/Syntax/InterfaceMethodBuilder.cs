@@ -14,7 +14,7 @@ public class InterfaceMethodBuilder(ITypeBuilder parent, string returnType, stri
     {
         _parameterBuilder.AddParameter<T>(parameterName);
         
-        parent.AddNamespace<T>();
+        parent.AddRequirement<T>();
 
         return this;
     }

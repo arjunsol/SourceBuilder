@@ -1,6 +1,4 @@
 ﻿using G4ME.SourceBuilder.Types;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Collections.Generic;
 
 namespace G4ME.SourceBuilder;
 

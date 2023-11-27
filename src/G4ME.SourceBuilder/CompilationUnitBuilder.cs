@@ -1,40 +1,45 @@
-﻿namespace G4ME.SourceBuilder;
+﻿
+using G4ME.SourceBuilder.Compile;
+
+namespace G4ME.SourceBuilder;
 
 public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
 {
-    private readonly List<ITypeBuilder> _classBuilders = [.. typeBuilders];
+    private readonly List<ITypeBuilder> _typeBuilders = [.. typeBuilders];
+    private readonly Requirements _requirements = new(string.Empty);
 
     public CompilationUnitSyntax Build()
     {
-        if (_classBuilders.Count == 0)
+        if (_typeBuilders.Count == 0)
         {
             throw new InvalidOperationException("At least one type builder is required.");
         }
 
         // Get the namespace from the first class (assuming all classes share the same namespace)
-        var namespaceName = _classBuilders.First().Namespace;
-        HashSet<string> requiredNamespaces = [ ]; // TODO: Replace with namespace collection?
-
+        string namespaceName = _typeBuilders.First().Namespace;
+        
         // Aggregate required namespaces from all class builders
-        foreach (var classBuilder in _classBuilders)
+        foreach (ITypeBuilder typeBuilder in _typeBuilders)
         {
-            requiredNamespaces.UnionWith(classBuilder.GetRequiredNamespaces());
+            _requirements.UnionWith(typeBuilder.GetRequirements());
         }
 
         // Create the using directives
-        var usingDirectives = requiredNamespaces.Select(ns => SyntaxFactory.UsingDirective(SyntaxFactory.ParseName(ns)))
-                                               .ToArray();
+        UsingDirectiveSyntax[] usingDirectives = _requirements.Namespaces.Select(ns => 
+                                                               SyntaxFactory.UsingDirective(
+                                                                   SyntaxFactory.ParseName(ns)))
+                                                                       .ToArray();
 
         // Create the namespace and add class declarations //namespaceName
         FileScopedNamespaceDeclarationSyntax fileScopedNamespace = new NamespaceBuilder()
                                                                        .FileScoped(namespaceName);
 
-        foreach (var classBuilder in _classBuilders)
+        foreach (ITypeBuilder typeBuilder in _typeBuilders)
         {
-            TypeDeclarationSyntax classDeclaration = classBuilder.Build();
+            TypeDeclarationSyntax classDeclaration = typeBuilder.Build();
             
-            if(_classBuilders.Count() > 1)
-                classDeclaration = AddRegionDirectives(classBuilder, classDeclaration);
+            if(_typeBuilders.Count() > 1)
+                classDeclaration = AddRegionDirectives(typeBuilder, classDeclaration);
 
             // Add class declaration to the namespace declaration
             fileScopedNamespace = fileScopedNamespace.AddMembers(classDeclaration);
@@ -73,5 +78,11 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
         classDeclaration = classDeclaration.WithTrailingTrivia(regionDirectiveEnd);
 
         return classDeclaration;
+    }
+
+    public IEnumerable<MetadataReference> GetRequiredReferences()
+    {
+        _requirements.References.AddDotNetReferences();
+        return _requirements.References;
     }
 }
