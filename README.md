@@ -1,23 +1,92 @@
-# About
-A template layout for new .NET Solutions using Visual Studio 2022 Community or greater. Includes only commonly used folders and configuration files.
+# G4ME SourceBuilder
 
-This template was inspired by David Fowler's [gist](https://gist.github.com/davidfowl/ed7564297c61fe9ab814) and can be adjusted as needed.
+## Overview
+G4ME SourceBuilder is a dynamic .NET code generation framework for programmable construction of classes, records, and interfaces, optimised for Visual Studio 2022 and .NET 5+ environments.
 
-# How to Use
-- Click on the 'Use this template' button.
-- Provide your new repository information and settings.
-- Update the existing `LICENSE` with your own.
-- Delete folders and files you may not need.
-- Rename the `Layout.sln` as needed.
-- Update this readme file.
+## Features
 
-## Extras
-Starting from .NET 5, it is possible to create a `.cs` file in your projects that will hold global `using` statements. E.g.:
+- **Builder**: Central orchestrator for adding types within a shared namespace.
+- **CompilationUnitBuilder**: Combine various type builders into a cohesive compilation unit.
+- **ClassBuilder**: Create and configure classes with inheritance, interfaces, and attributes.
+- **RecordBuilder**: Construct record types with parameters and attributes.
+- **InterfaceBuilder**: Build interfaces with methods, properties, and attributes.
 
-File: `Usings.cs`
+## Usage
+
+### Creating a class with method
+
 ```csharp
-global using System.Buffers.Binary;
-global using System.Runtime.CompilerServices;
-global using System.Runtime.InteropServices;
-global using System.Text;
+new Builder("ExampleNamespace")
+                .AddClass("Person", c => c
+                    .Properties(p => p
+                        .Add<string>("Name").Get().PrivateSet())
+                    .Constructor(c => c
+                        .Parameter<string>("name")
+                        .Body("Name = name;"))
+                    .AddMethod("Greet", m => m
+                        .Body(@"Console.WriteLine($"Hello, {Name}!");")))
+                    .ToString();
 ```
+
+#### Result:
+
+```csharp
+using System;
+
+namespace ExampleNamespace;
+public class Person
+{
+    public string Name { get; private set; }
+
+    public Person(string name)
+    {
+        Name = name;
+    }
+
+    public void Greet()
+    {
+        Console.WriteLine($"Hello, {Name}!");
+    }
+}
+```
+
+
+### Creating a record with interface implementation
+
+```csharp
+new Builder("ExampleNamespace")
+                .AddRecord("PersonRequest", r => r.Implements<IRequest<PersonResponse>>()
+                    .Parameter<string>("Name"))
+                    .ToString();
+```
+
+#### Result:
+
+```csharp
+using G4ME.SourceBuilder.Tests;
+using System;
+
+namespace ExampleNamespace;
+public record PersonRequest(string Name) : IRequest<PersonResponse>;
+```
+
+
+### Creating a basic interface with single property
+
+```csharp
+new Builder("Example")
+                .AddInterface("IResponse", i => i
+                    .Properties(p => p
+                        .Add<string>("Name").Get()))
+                .ToString();
+#### Result:
+
+```csharp
+namespace Example;
+public interface IResponse
+{
+    public string Name { get; }
+}
+```
+
+

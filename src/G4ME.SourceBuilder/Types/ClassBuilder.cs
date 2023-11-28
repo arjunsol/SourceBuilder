@@ -27,21 +27,24 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
 
     public ClassBuilder Implements<TInterface>() where TInterface : class
     {
-        //TODO: Add to guard project
         if (!typeof(TInterface).IsInterface)
         {
             throw new ArgumentException("Generic type must be an interface.", nameof(TInterface));
         }
 
-
         AddRequirement<TInterface>();
 
-        var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
+        Type interfaceType = typeof(TInterface);
+
+        string interfaceName = interfaceType.IsGenericType
+                            ? GetGenericTypeName(interfaceType)
+                            : interfaceType.Name;
+
         _classDeclaration = _classDeclaration.AddBaseListTypes(
                                 SyntaxFactory.SimpleBaseType(
                                     SyntaxFactory.ParseTypeName(interfaceName)));
 
-        return this;    
+        return this;
     }
 
     public ClassBuilder Attributes(Action<AttributeBuilder> attributeConfigurator)
@@ -116,4 +119,13 @@ public class ClassBuilder(string name, string classNamespace) : IClassBuilder
     public TypeDeclarationSyntax Build() => _classDeclaration;
 
     public Requirements GetRequirements() => _requirements;
+
+    private string GetGenericTypeName(Type type)
+    {
+        Type[] genericArguments = type.GetGenericArguments();
+        string typeNameWithoutArity = type.Name.Split('`')[0];
+        string formattedGenericArguments = string.Join(", ", genericArguments.Select(arg => arg.Name));
+
+        return $"{typeNameWithoutArity}<{formattedGenericArguments}>";
+    }
 }

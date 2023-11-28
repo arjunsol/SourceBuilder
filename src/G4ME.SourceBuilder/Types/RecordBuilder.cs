@@ -1,5 +1,4 @@
-﻿
-using G4ME.SourceBuilder.Compile;
+﻿using G4ME.SourceBuilder.Compile;
 
 namespace G4ME.SourceBuilder.Syntax;
 
@@ -44,7 +43,12 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
 
         AddRequirement<TInterface>();
 
-        var interfaceName = Syntax.TypeName.ValueOf<TInterface>();
+        Type interfaceType = typeof(TInterface);
+        
+        string interfaceName = interfaceType.IsGenericType
+                            ? GetGenericTypeName(interfaceType)
+                            : interfaceType.Name;
+
         _recordDeclaration = _recordDeclaration.AddBaseListTypes(
                                 SyntaxFactory.SimpleBaseType(
                                     SyntaxFactory.ParseTypeName(interfaceName)));
@@ -118,4 +122,13 @@ public class RecordBuilder(string recordName, string recordNamespace = "") : ITy
     }
 
     public Requirements GetRequirements() => _requirements;
+
+    private string GetGenericTypeName(Type type)
+    {
+        Type[] genericArguments = type.GetGenericArguments();
+        string typeNameWithoutArity = type.Name.Split('`')[0];
+        string formattedGenericArguments = string.Join(", ", genericArguments.Select(arg => arg.Name));
+
+        return $"{typeNameWithoutArity}<{formattedGenericArguments}>";
+    }
 }
