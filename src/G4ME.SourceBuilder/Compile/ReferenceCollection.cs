@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Reflection;
 
 namespace G4ME.SourceBuilder.Compile;
 
@@ -9,9 +8,7 @@ public class ReferenceCollection : IEnumerable<PortableExecutableReference>
 
     public void AddDotNetReferences()
     {
-        Add(Assembly.Load("System.Runtime").Location);
-        Add(Assembly.Load("System.Console").Location);
-        Add<object>();
+        _assemblyLocations.UnionWith(new DotNetReferences());
     }
 
     public void Add<T>() => Add(typeof(T));

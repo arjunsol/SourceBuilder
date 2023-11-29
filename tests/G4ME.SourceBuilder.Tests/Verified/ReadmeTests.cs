@@ -1,16 +1,16 @@
 ﻿using System.Reflection;
 using System.Text;
 
-namespace G4ME.SourceBuilder.Tests;
+namespace G4ME.SourceBuilder.Tests.Verified;
 
 [UsesVerify]
 [TestCaseOrderer(
     ordererTypeName: "G4ME.SourceBuilder.Tests.PriorityOrderer",
     ordererAssemblyName: "G4ME.SourceBuilder.Tests")]
-public class ReadmeTest
+public class ReadmeTests
 {
     private static StringBuilder _readme = new();
-    
+
     [Fact, TestPriority(1)]
     public async Task ClassCreationExampleTest()
     {
@@ -84,7 +84,7 @@ public class ReadmeTest
         string path = Path.Combine(solutionRoot, readmeFile);
 
         await SaveReadmeToFile(path);
-    } 
+    }
 
     private void WrapAndWriteCode(string generatedCode)
     {
@@ -144,7 +144,7 @@ public class ReadmeTest
     {
         string assemblyPath = Assembly.GetExecutingAssembly().Location;
         string? executingAssemblyPath = Path.GetDirectoryName(assemblyPath);
-        
+
         if (string.IsNullOrWhiteSpace(executingAssemblyPath))
         {
             Assert.Fail("Executing assembly path not found");
@@ -168,5 +168,5 @@ public class ReadmeTest
 
     private interface IRequest<T> { }
 
-    private class PersonResponse { }    
+    private class PersonResponse { }
 }

@@ -1,4 +1,4 @@
-﻿using G4ME.SourceBuilder.Tests;
+﻿using G4ME.SourceBuilder.Tests.Verified;
 using System;
 
 namespace ExampleNamespace;
