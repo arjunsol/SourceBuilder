@@ -6,9 +6,9 @@ namespace G4ME.SourceBuilder;
 public class Builder(string sharedNamespace)
 {
     // TODO: Create a collections class that adds validation for unique names and such
-    private readonly List<ITypeBuilder> _typeBuilders = [ ];
+    private readonly List<ITypeBuilder<TypeDeclarationSyntax>> _typeBuilders = [ ];
 
-    public Builder AddClass(string className, Action<ClassBuilder> configure)
+    public Builder AddClass(string className, Action<IClassBuilder> configure)
     {
         ClassBuilder classBuilder = new(className, sharedNamespace);
         

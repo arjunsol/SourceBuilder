@@ -28,10 +28,11 @@ public class ClassBuilderTests
     [Fact]
     public void TestAddParameterGenericReturn_AddsCorrectNamespace()
     {
-        var classBuilder = new ClassBuilder("TestClass")
-                               .AddMethod<List<SomeClass>>("TestMethod",
-                                                           m => m.Body(
-                                                           b => b.AddLine("return new List<TestType>();")));
+        var classBuilder = new ClassBuilder("TestClass");
+
+        classBuilder.AddMethod<List<SomeClass>>("TestMethod",
+                     m => m.Body(
+                     b => b.AddLine("return new List<TestType>();")));
         
         var nspace = classBuilder.GetRequirements().Namespaces;
 
@@ -65,6 +66,18 @@ public class ClassBuilderTests
 
         Assert.NotNull(classDeclaration.BaseList);
         Assert.Contains(classDeclaration.BaseList.Types, t => t.ToString() == nameof(ISomeInterface));
+    }
+
+    [Fact]
+    public void TestImplementsInterface_GenericInterface_AddsInterface()
+    {
+        var classBuilder = new ClassBuilder("TestClass");
+        classBuilder.Implements<ISomeGenericInterface<SomeClass>>();
+
+        var classDeclaration = classBuilder.Build();
+
+        Assert.NotNull(classDeclaration.BaseList);
+        Assert.Contains(classDeclaration.BaseList.Types, t => t.ToString() == "ISomeGenericInterface<SomeClass>");        
     }
 
     [Fact]
@@ -180,11 +193,56 @@ public class ClassBuilderTests
     }
 
     [Fact]
+    public void TestAddDuplicateConstructor_ThrowsException()
+    {
+        var classBuilder = new ClassBuilder("TestClass");
+
+        classBuilder.Constructor();
+        Assert.Throws<InvalidOperationException>(classBuilder.Constructor);
+    }
+
+    [Fact]
+    public void TestAddTwoConstrcutors_DifferentParameters_AddsBoth()
+    {
+        var classBuilder = new ClassBuilder("TestClass");
+
+        classBuilder.Constructor(c => c.Parameter<string>("firstName").Parameter<string>("lastName"));
+        classBuilder.Constructor(c => c.Parameter<int>("age"));
+
+        var classDeclaration = classBuilder.Build();
+
+        Assert.Equal(2, classDeclaration.Members.OfType<ConstructorDeclarationSyntax>().Count());
+    }
+
+    [Fact]
+    public void TestAddTwoConstructors_SameParameterCount_AddsBoth()
+    {
+        var classBuilder = new ClassBuilder("TestClass");
+
+        classBuilder.Constructor(c => c.Parameter<string>("name"));
+        classBuilder.Constructor(c => c.Parameter<int>("age"));
+
+        var classDeclaration = classBuilder.Build();
+
+        Assert.Equal(2, classDeclaration.Members.OfType<ConstructorDeclarationSyntax>().Count());
+    }
+
+    [Fact]
+    public void TestAddDuplicateConstructor_WithParameters_ThrowsException()
+    {
+        var classBuilder = new ClassBuilder("TestClass");
+
+        classBuilder.Constructor(c => c.Parameter<string>("name"));
+        Assert.Throws<InvalidOperationException>(() => classBuilder.Constructor(c => c.Parameter<string>("name")));
+    }
+
+    [Fact]
     public void ClassBuilder_ImplementsClass_ThrowsException()
     {
         var builder = new ClassBuilder("MyRecord");
 
-        Assert.Throws<ArgumentException>(() => builder.Implements<SomeClass>());
+        Assert.Throws<ArgumentException>(builder.Implements<SomeClass>);
     }
 
 }
+

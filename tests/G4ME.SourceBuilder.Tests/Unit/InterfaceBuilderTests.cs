@@ -60,7 +60,8 @@ public class InterfaceBuilderTests
     public void InterfaceBuilder_AddsAttributesCorrectly()
     {
         var builder = new InterfaceBuilder("IMyInterface");
-        builder.WithAttributes(ab => ab.Add<SomeAttribute>());
+        
+        builder.Attributes(ab => ab.Add<SomeAttribute>());
 
         var interfaceDeclaration = builder.Build();
 

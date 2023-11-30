@@ -28,7 +28,9 @@ public class RecordBuilderTests
     [Fact]
     public void RecordBuilder_InheritsFromBaseRecord()
     {
-        var builder = new RecordBuilder("MyRecord").Extends<BaseRecord>();
+        var builder = new RecordBuilder("MyRecord");
+        
+        builder.Extends<BaseRecord>();
 
         var recordDeclaration = builder.Build();
 
@@ -40,7 +42,9 @@ public class RecordBuilderTests
     [Fact]
     public void RecordBuilder_ImplementsInterface()
     {
-        var builder = new RecordBuilder("MyRecord").Implements<ISomeInterface>();
+        var builder = new RecordBuilder("MyRecord");
+        
+        builder.Implements<ISomeInterface>();
 
         var recordDeclaration = builder.Build();
 
@@ -98,8 +102,9 @@ public class RecordBuilderTests
     [Fact]
     public void RecordBuilder_AddsAttributesCorrectly()
     {
-        var builder = new RecordBuilder("MyRecord")
-            .Attributes(ab => ab.Add<SomeAttribute>());
+        RecordBuilder builder = new("MyRecord");
+
+        builder.Attributes(ab => ab.Add<SomeAttribute>());
 
         var recordDeclaration = builder.Build();
 

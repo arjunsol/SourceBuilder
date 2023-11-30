@@ -1,8 +1,10 @@
-﻿using G4ME.SourceBuilder.Compile;
+﻿using System.Diagnostics.CodeAnalysis;
+using G4ME.SourceBuilder.Compile;
 using Microsoft.CodeAnalysis;
 
 namespace G4ME.SourceBuilder.Tests.Compile;
 
+[SuppressMessage("Assertions", "xUnit2012:Do not use boolean check to check if a value exists in a collection", Justification = "<Pending>")]
 public class RequiredReferencesTests
 {
     [Fact]

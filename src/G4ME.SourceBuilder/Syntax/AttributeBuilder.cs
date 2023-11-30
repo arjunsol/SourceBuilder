@@ -1,6 +1,6 @@
 ﻿namespace G4ME.SourceBuilder.Syntax;
 
-public class AttributeBuilder(ITypeBuilder parent)
+public class AttributeBuilder(ITypeBuilder<TypeDeclarationSyntax> parent)
 {
     private readonly List<AttributeSyntax> _attributes = [];
 

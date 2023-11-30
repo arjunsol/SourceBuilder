@@ -1,6 +1,6 @@
 ﻿namespace G4ME.SourceBuilder.Syntax;
 
-public class MethodBuilder(ITypeBuilder parent, string returnType, string methodName)
+public class MethodBuilder(ITypeBuilder<TypeDeclarationSyntax> parent, string returnType, string methodName)
 {
     private readonly ParameterBuilder _parameterBuilder = new();
 
@@ -9,7 +9,7 @@ public class MethodBuilder(ITypeBuilder parent, string returnType, string method
     private MethodDeclarationSyntax _methodDeclaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), methodName)
                                                             .AddModifiers(SyntaxFactory.Token(
                                                                 SyntaxKind.PublicKeyword));
-    public MethodBuilder(ITypeBuilder parentBuilder, string methodName) : this(parentBuilder, "void", methodName)
+    public MethodBuilder(ITypeBuilder<TypeDeclarationSyntax> parentBuilder, string methodName) : this(parentBuilder, "void", methodName)
     {
     }
 

@@ -1,24 +1,25 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
-using NSubstitute;
 using System.Text.Json.Serialization;
 using G4ME.SourceBuilder.Tests.Objects;
+using Moq;
+using Xunit;
 
 namespace G4ME.SourceBuilder.Tests.Unit;
 
 public class MethodBuilderTests
 {
-    private readonly IClassBuilder _mockClassBuilder;
+    private readonly Mock<IClassBuilder> _mockClassBuilder;
 
     public MethodBuilderTests()
     {
-        _mockClassBuilder = Substitute.For<IClassBuilder>();
+        _mockClassBuilder = new Mock<IClassBuilder>();
     }
 
     [Fact]
     public void TestConstructorInitialization_ConstructsProperly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "TestMethod");
         var method = methodBuilder.Build();
 
         Assert.NotNull(method);
@@ -29,7 +30,7 @@ public class MethodBuilderTests
     [Fact]
     public void TestAddParameter_AddsParameterCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "void", "TestMethod");
         methodBuilder.Parameter<int>("param1");
 
         var method = methodBuilder.Build();
@@ -43,7 +44,7 @@ public class MethodBuilderTests
     [Fact]
     public void TestAddMultipleParameters_AddsAllParameters()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "void", "TestMethod");
         methodBuilder.Parameter<int>("param1").Parameter<string>("param2");
 
         var method = methodBuilder.Build();
@@ -54,16 +55,16 @@ public class MethodBuilderTests
     [Fact]
     public void TestAddParameterAddsNamespace_AddsNamespaceCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "void", "TestMethod");
         methodBuilder.Parameter<SomeClass>("param1");
 
-        _mockClassBuilder.Received(1).AddRequirement<SomeClass>();
+        _mockClassBuilder.Verify(m => m.AddRequirement<SomeClass>(), Times.Once());
     }
 
     [Fact]
     public void TestWithBody_AddsBodyCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "string", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "string", "TestMethod");
         methodBuilder.Body(body => body.AddLine("return _thing;"));
 
         var method = methodBuilder.Build();
@@ -75,7 +76,7 @@ public class MethodBuilderTests
     [Fact]
     public void TestWithAttributes_AddsAttributesCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "void", "TestMethod");
         methodBuilder.Attributes(attrs => attrs.Add<JsonSerializableAttribute>());
 
         var method = methodBuilder.Build();
@@ -86,7 +87,7 @@ public class MethodBuilderTests
     [Fact]
     public void TestBuildMethod_BuildsMethodCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "void", "TestMethod");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "void", "TestMethod");
         methodBuilder.Parameter<int>("param1").Body(body => body.AddLine("return;"));
 
         var method = methodBuilder.Build();
@@ -100,7 +101,7 @@ public class MethodBuilderTests
     [Fact]
     public void TestMethodProperties_AreSetCorrectly()
     {
-        var methodBuilder = new MethodBuilder(_mockClassBuilder, "int", "CalculateSum");
+        var methodBuilder = new MethodBuilder(_mockClassBuilder.Object, "int", "CalculateSum");
         methodBuilder.Parameter<int>("param1").Parameter<int>("param2");
 
         var method = methodBuilder.Build();

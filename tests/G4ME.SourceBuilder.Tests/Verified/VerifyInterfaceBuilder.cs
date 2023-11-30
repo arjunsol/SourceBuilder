@@ -10,17 +10,18 @@ public class VerifyInterfaceBuilder
     [Fact]
     public async Task CreateBasicInterfaceTest()
     {
-        var builder = new InterfaceBuilder("MyInterface");
-
+        IInterfaceBuilder builder = new InterfaceBuilder("MyInterface");
+        
         await BuildAndVerify(builder);
     }
 
     [Fact]
     public async Task InterfaceWithMethodsTest()
     {
-        var builder = new InterfaceBuilder("MyInterface")
-            .AddMethod("MethodOne", mb => { })
-            .AddMethod<string>("MethodTwo", mb => mb.Parameter<string>("Thing"));
+        IInterfaceBuilder builder = new InterfaceBuilder("MyInterface");
+
+        builder.AddMethod("MethodOne", mb => { })
+               .AddMethod<string>("MethodTwo", mb => mb.Parameter<string>("Thing"));
 
         await BuildAndVerify(builder);
     }
@@ -28,8 +29,9 @@ public class VerifyInterfaceBuilder
     [Fact]
     public async Task InterfaceExtendsTest()
     {
-        var builder = new InterfaceBuilder("MyInterface")
-            .Extends<ISomeInterface>();
+        IInterfaceBuilder builder = new InterfaceBuilder("MyInterface");
+        
+        builder.Extends<ISomeInterface>();
 
         await BuildAndVerify(builder);
     }
@@ -37,8 +39,9 @@ public class VerifyInterfaceBuilder
     [Fact]
     public async Task InterfaceWithPropertiesTest()
     {
-        var builder = new InterfaceBuilder("MyInterface")
-            .Properties(p => p.Add<string>("PropertyName").Get().Set());
+        IInterfaceBuilder builder = new InterfaceBuilder("MyInterface");
+
+        builder.Properties(p => p.Add<string>("PropertyName").Get().Set());
 
         await BuildAndVerify(builder);
     }
@@ -46,14 +49,17 @@ public class VerifyInterfaceBuilder
     [Fact]
     public async Task InterfaceWithAttributesTest()
     {
-        var builder = new InterfaceBuilder("MyInterface")
-            .WithAttributes(ab => ab.Add<SomeAttribute>())
-            .AddMethod("Thing", mb => mb.Attributes(a => a.Add<SomeAttribute>()));
+        IInterfaceBuilder builder = new InterfaceBuilder("MyInterface");
+
+        builder.Attributes(ab => ab.Add<SomeAttribute>())
+               .AddMethod("Thing", mb => mb
+                   .Attributes(a => a
+                       .Add<SomeAttribute>()));
 
         await BuildAndVerify(builder);
     }
 
-    private static async Task BuildAndVerify(InterfaceBuilder builder)
+    private static async Task BuildAndVerify(ITypeBuilder<InterfaceDeclarationSyntax> builder)
     {
         var generatedInterface = builder.Build();
 

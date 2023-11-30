@@ -15,6 +15,7 @@ public class Compiler
             .AddSyntaxTrees(syntaxTree);
 
         Assembly assembly = CompileAndLoadAssembly(compilation);
+        
         return CreateInstanceOfCompiledClass(assembly, className, constructorArgs);
     }
 
@@ -40,7 +41,7 @@ public class Compiler
 
     private object CreateInstanceOfCompiledClass(Assembly assembly, string className, params object[] constructorArgs)
     {
-        Type type = assembly.GetType(className);
+        Type? type = assembly.GetType(className);
 
         if (type is null)
         {

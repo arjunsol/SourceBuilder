@@ -25,24 +25,27 @@ public class VerifyCompilationBuilder
         const string CLASSNAME = "MyClass";
         const string NAMESPACE = "MyNamespace";
 
-        var classBuilder = new ClassBuilder(CLASSNAME, NAMESPACE)
-                                   .Attributes(a => a
-                                       .Add<SerializableAttribute>()
-                                       .Add<AnotherAttribute>())
-                                   .Extends<SomeClass>().Implements<ISomeInterface>()
-                                   .Properties(p => p
-                                       .AddPrivate<string>("Name").Get().Set())
-                                   .Constructor(c => c
-                                       .Parameter<int>("age")
-                                       .Parameter<string>("name")
-                                       .MapBase()
-                                       .Body("Name = name;"))
-                                   .AddMethod("TestMethod", m => m //TODO: Methods (like properties and attributes)
-                                       .Body(@"Console.WriteLine(Name);")) // TODO: Allow method overrides
-                                   .AddMethod("SetName", m => m
-                                       .Parameter<string>("name")
-                                       .Body(b => b
-                                       .AddLine(@"Name = name;")));
+        var classBuilder = new ClassBuilder(CLASSNAME, NAMESPACE);
+        
+        classBuilder.Attributes(a => a
+                        .Add<SerializableAttribute>()
+                        .Add<AnotherAttribute>())
+                    .Extends<SomeClass>().Implements<ISomeInterface>()
+                    .Properties(p => p
+                        .AddPrivate<string>("Name").Get().Set())
+                    .Constructor(c => c
+                        .Parameter<int>("age")
+                        .Parameter<string>("name")
+                        .MapBase()
+                        .Body("Name = name;"))
+                    .AddMethod("TestMethod", m => m //TODO: Methods (like properties and attributes)
+                        .Body(@"Console.WriteLine(Name);")) // TODO: Allow method overrides
+                    .AddMethod("SetName", m => m
+                        .Parameter<string>("name")
+                        .Body(b => b
+                        .AddLine(@"Name = name;")));
+        
+
 
         CompilationUnitBuilder compilationUnitBuilder = new(classBuilder);
 

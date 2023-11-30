@@ -18,9 +18,10 @@ public class VerifyRecordBuilder
     [Fact]
     public async Task Create_RecordWithPrimaryConstructor_Verified()
     {
-        var recordBuilder = new RecordBuilder("SimpleRecord")
-                                .Parameter<string>("FirstName")
-                                .Parameter<string>("LastName");
+        var recordBuilder = new RecordBuilder("SimpleRecord");
+
+        recordBuilder.Parameter<string>("FirstName")
+                     .Parameter<string>("LastName");
 
         await BuildAndVerify(recordBuilder);
     }
@@ -28,9 +29,10 @@ public class VerifyRecordBuilder
     [Fact]
     public async Task Create_RecordWithAttribute_Verified()
     {
-        var recordBuilder = new RecordBuilder("TestRecord")
-                                .Attributes(a =>
-                                    a.Add<SerializableAttribute>());
+        RecordBuilder recordBuilder = new("TestRecord");
+        
+        recordBuilder.Attributes(a => a
+                         .Add<SerializableAttribute>());
 
         await BuildAndVerify(recordBuilder);
     }
@@ -58,8 +60,8 @@ public class VerifyRecordBuilder
     [Fact]
     public async Task Create_RecordImplementsInterface_Verified()
     {
-        var recordBuilder = new RecordBuilder("TestRecord")
-                                .Implements<ISomeInterface>();
+        var recordBuilder = new RecordBuilder("TestRecord");
+        recordBuilder.Implements<ISomeInterface>();
 
         await BuildAndVerify(recordBuilder);
     }
@@ -67,8 +69,8 @@ public class VerifyRecordBuilder
     [Fact]
     public async Task Create_RecordExtendsBase_Verified()
     {
-        var recordBuilder = new RecordBuilder("TestRecord")
-                                .Extends<BaseRecord>();
+        var recordBuilder = new RecordBuilder("TestRecord");
+        recordBuilder.Extends<BaseRecord>();
 
         await BuildAndVerify(recordBuilder);
     }

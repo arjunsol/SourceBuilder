@@ -2,13 +2,13 @@
 
 namespace G4ME.SourceBuilder.Syntax;
 
-public class InterfaceMethodBuilder(ITypeBuilder parent, string returnType, string methodName)
+public class InterfaceMethodBuilder(ITypeBuilder<InterfaceDeclarationSyntax> parent, string returnType, string methodName)
 {
     private readonly ParameterBuilder _parameterBuilder = new();
 
     private MethodDeclarationSyntax _methodDeclaration = SyntaxFactory.MethodDeclaration(SyntaxFactory.ParseTypeName(returnType), methodName);
 
-    public InterfaceMethodBuilder(InterfaceBuilder parent, string methodName) : this(parent, "void", methodName) { }
+    public InterfaceMethodBuilder(IInterfaceBuilder parent, string methodName) : this(parent, "void", methodName) { }
 
     public InterfaceMethodBuilder Parameter<T>(string parameterName)
     {

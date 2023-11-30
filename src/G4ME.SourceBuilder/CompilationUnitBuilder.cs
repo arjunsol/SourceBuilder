@@ -3,9 +3,9 @@ using G4ME.SourceBuilder.Compile;
 
 namespace G4ME.SourceBuilder;
 
-public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
+public class CompilationUnitBuilder(params ITypeBuilder<TypeDeclarationSyntax>[] typeBuilders)
 {
-    private readonly List<ITypeBuilder> _typeBuilders = [.. typeBuilders];
+    private readonly List<ITypeBuilder<TypeDeclarationSyntax>> _typeBuilders = [.. typeBuilders];
     private readonly Requirements _requirements = new(string.Empty);
 
     public CompilationUnitSyntax Build()
@@ -19,7 +19,7 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
         string namespaceName = _typeBuilders.First().Namespace;
         
         // Aggregate required namespaces from all class builders
-        foreach (ITypeBuilder typeBuilder in _typeBuilders)
+        foreach (ITypeBuilder<TypeDeclarationSyntax> typeBuilder in _typeBuilders)
         {
             _requirements.UnionWith(typeBuilder.GetRequirements());
         }
@@ -34,7 +34,7 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
         FileScopedNamespaceDeclarationSyntax fileScopedNamespace = new NamespaceBuilder()
                                                                        .FileScoped(namespaceName);
 
-        foreach (ITypeBuilder typeBuilder in _typeBuilders)
+        foreach (ITypeBuilder<TypeDeclarationSyntax> typeBuilder in _typeBuilders)
         {
             TypeDeclarationSyntax classDeclaration = typeBuilder.Build();
             
@@ -54,7 +54,7 @@ public class CompilationUnitBuilder(params ITypeBuilder[] typeBuilders)
         return compilationUnit;
     }
 
-    private static TypeDeclarationSyntax AddRegionDirectives(ITypeBuilder classBuilder, TypeDeclarationSyntax classDeclaration)
+    private static TypeDeclarationSyntax AddRegionDirectives(ITypeBuilder<TypeDeclarationSyntax> classBuilder, TypeDeclarationSyntax classDeclaration)
     {
         // Create #region directive
         var regionDirectiveStart = SyntaxFactory.Trivia(

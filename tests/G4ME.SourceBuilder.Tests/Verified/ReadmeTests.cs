@@ -112,19 +112,20 @@ public class ReadmeTests
     private static string ClassExample() =>
         new Builder("ExampleNamespace")
                 .AddClass("Person", c => c
-                    .Properties(p => p
-                        .Add<string>("Name").Get().PrivateSet())
-                    .Constructor(c => c
-                        .Parameter<string>("name")
-                        .Body("Name = name;"))
-                    .AddMethod("Greet", m => m
-                        .Body(@"Console.WriteLine($""Hello, {Name}!"");")))
-                    .ToString();
+                .Properties(p => p
+                    .Add<string>("Name").Get().PrivateSet())
+                .Constructor(c => c
+                    .Parameter<string>("name")
+                    .Body("Name = name;"))
+                .AddMethod("Greet", m => m
+                    .Body(@"Console.WriteLine($""Hello, {Name}!"");")))
+                .ToString();
 
     private static string RecordExample() =>
         new Builder("ExampleNamespace")
-                .AddRecord("PersonRequest", r => r.Implements<IRequest<PersonResponse>>()
-                    .Parameter<string>("Name"))
+                .AddRecord("PersonRequest", r => r
+                    .Parameter<string>("Name")
+                    .Implements<IRequest<PersonResponse>>())
                     .ToString();
 
     private static string InterfaceExample() =>
@@ -160,7 +161,7 @@ public class ReadmeTests
         return directory?.FullName ?? string.Empty;
     }
 
-    private static string GetReadmeFilePath()
+    private static string? GetReadmeFilePath()
     {
         var solutionRoot = FindSolutionRoot();
         return solutionRoot != null ? Path.Combine(solutionRoot, "README.md") : null;

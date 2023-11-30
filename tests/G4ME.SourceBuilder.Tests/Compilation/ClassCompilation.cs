@@ -33,24 +33,30 @@ public class ClassCompilationTests
         const string CLASSNAME = "MyClass";
         const string NAMESPACE = "MyNamespace";
 
-        var classBuilder = new ClassBuilder(CLASSNAME, NAMESPACE)
-                               .Attributes(a => a
-                                   .Add<SerializableAttribute>()
-                                   .Add<AnotherAttribute>())
-                               .Extends<SomeClass>().Implements<ISomeInterface>()
-                               .Properties(p => p
-                                   .AddPrivate<string>("Message").Get().Set())
-                               .Constructor(c => c
-                                   .Parameter<int>("age")
-                                   .Parameter<string>("name")
-                                   .MapBase()
-                                   .Body("Message = name;"))
-                               .AddMethod("TestMethod", m => m
-                                   .Body(@"Console.WriteLine(Message);"))
-                               .AddMethod("SetMessage", m => m
-                                   .Parameter<string>("message")
-                                   .Body(b => b
-                                   .AddLine(@"Message = message;")));
+        var classBuilder = new ClassBuilder(CLASSNAME, NAMESPACE);
+
+         classBuilder.Attributes(a => a
+                        .Add<SerializableAttribute>()
+                        .Add<AnotherAttribute>())
+
+                      .Extends<SomeClass>().Implements<ISomeInterface>()
+            
+                      .Properties(p => p
+                        .AddPrivate<string>("Message").Get().Set())
+                    
+                      .Constructor(c => c
+                        .Parameter<int>("age")
+                        .Parameter<string>("name")
+                        .MapBase()
+                        .Body("Message = name;"))                    
+                    
+                      .AddMethod("TestMethod", m => m
+                        .Body(@"Console.WriteLine(Message);"))
+                    
+                      .AddMethod("SetMessage", m => m
+                        .Parameter<string>("message")
+                        .Body(b => b
+                        .AddLine(@"Message = message;")));
 
         CompilationUnitBuilder compilationUnitBuilder = new(classBuilder);
         
