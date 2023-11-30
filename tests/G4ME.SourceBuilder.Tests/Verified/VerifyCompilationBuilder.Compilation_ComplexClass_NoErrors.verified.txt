@@ -1,0 +1,25 @@
+﻿using System;
+using G4ME.SourceBuilder.Tests.Objects;
+
+namespace MyNamespace;
+[Serializable()]
+[Another()]
+public class MyClass : SomeClass, ISomeInterface
+{
+    private string Name { get; set; }
+
+    public MyClass(int age, string name) : base(age, name)
+    {
+        Name = name;
+    }
+
+    public void TestMethod()
+    {
+        Console.WriteLine(Name);
+    }
+
+    public void SetName(string name)
+    {
+        Name = name;
+    }
+}

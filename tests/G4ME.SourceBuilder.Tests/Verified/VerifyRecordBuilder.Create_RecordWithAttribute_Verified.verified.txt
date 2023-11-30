@@ -1,0 +1,2 @@
+﻿[Serializable()]
+public record TestRecord();

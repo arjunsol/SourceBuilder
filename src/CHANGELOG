@@ -1,0 +1,74 @@
+2023-11-30 - [feature/SB-015]
+
+- Adding rudimentary architecture tests
+- Extending test cases for better coverage
+- Adding comments and documentation to builder classes
+
+2023-11-29 - [feature/SB-014]
+
+- Adding Compiler class, compilation can now be shared and might become a first class feature.
+- Fixing reference issues with DotNetReferences and bringing into usage
+
+2023-11-28 - [feature/SB-013]
+
+- Adding README generation
+- Fixing issue with ClassBuilder and RecordBuilder, when Implements is called with generic interfaces
+
+2023-11-27 - [feature/SB-012] 
+
+- Proper requirement tracking of namespaces and assemblies using dedicated Requirements class
+
+2023-11-25 - [feature/SB-011] 
+
+- Testing NamespaceBuilder
+- Fixing up compilation tests.
+
+2023-11-23 - [feature/SB-010] 
+
+- Extending test cases
+
+2023-11-23 - [feature/SB-009] 
+
+- Reworking InterfaceBuilder and associated tests
+- Adding InterfaceMethodBuilder
+
+2023-11-23 - [feature/SB-008] 
+
+- Refactoring and testing RecordBulder
+- Adding ParameterBuilder
+
+2023-11-23 - [feature/SB-007] 
+
+- Cleaning up fluent API
+- Refactoring some collections
+
+2023-11-22 - [feature/SB-006] 
+
+- Adding Verifier tests for ClassBuilder
+- Minor code fixups.
+
+2023-11-21 - [feature/SB-005] 
+
+- Adding Builder object
+- Completing test coverage.
+
+2023-11-21 - [feature/SB-004] 
+
+- Rename and restructure of project folders and namespaces
+
+2023-11-21 - [feature/SB-003] 
+
+- Adding RecordBuilder
+
+2023-11-20 - [feature/SB-002] 
+
+- Adding InterfaceBuilder
+- Adding NamespaceCollection
+
+2023-11-20 - [feature/SB-001] 
+
+- Class building implemented and tested
+
+2023-11-19 - Adding projects
+
+2023-11-19 - Initial Commit
